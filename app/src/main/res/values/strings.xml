@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Calcola ora uscita</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_exit">Uscita</string>
+    <string name="welcomestring">Calcola ora di uscita</string>
+    <string name="setOraIngresso">Adesso!</string>
+    <string name="Label1">Large Text</string>
+    <string name="updateOraIngresso">Imposta ora ingresso</string>
+    <string name="buttonAnnulla"><![CDATA[<]]></string>
+    <string name="buttonTimePicker">+</string>
+    <string name="action_about">Informazioni</string>
+    <string name="Autore">Gabriele Galluzzo</string>
+
+    <string name="TODO">TODO</string>
+    <string name="TODO_MSG">Non ancora implementato</string>
+
+    <string name="TIME_PICKER_TITLE">Imposta ora</string>
+
+    <string name="appwidget_text">Ora ingresso     </string>
+    <string name="add_widget">Aggiungi widget</string>
+    <string name="OraUscitaWidgetLBL">Ora uscita</string>
+    <string name="OraUscitaValueWidgetLBL">--:--</string>
+    <string name="OraIngressoValueWidgetLBL">--:--</string>
+
+    <string name="ORA_INGRESSO_WIDGET">ORA_INGRESSO_WIDGET</string>
+    <string name="MINUTO_INGRESSO_WIDGET">MINUTO_INGRESSO_WIDGET</string>
+</resources>
