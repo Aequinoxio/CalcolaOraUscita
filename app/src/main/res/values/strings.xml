@@ -15,6 +15,7 @@
 
     <string name="TODO">TODO</string>
     <string name="TODO_MSG">Non ancora implementato</string>
+    <string name="TODO_MSG2">Il valore per il calcolo dell\'ora di uscita è fissato a 7:42 per tutti i giorni</string>
 
     <string name="TIME_PICKER_TITLE">Imposta ora</string>
 
@@ -26,4 +27,5 @@
 
     <string name="ORA_INGRESSO_WIDGET">ORA_INGRESSO_WIDGET</string>
     <string name="MINUTO_INGRESSO_WIDGET">MINUTO_INGRESSO_WIDGET</string>
+
 </resources>

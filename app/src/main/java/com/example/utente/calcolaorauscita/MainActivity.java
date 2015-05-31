@@ -220,7 +220,7 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(getString(R.string.TODO))
-                    .setMessage(getString(R.string.TODO_MSG))
+                    .setMessage(getString(R.string.TODO_MSG)+"\n"+getString(R.string.TODO_MSG2))
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
