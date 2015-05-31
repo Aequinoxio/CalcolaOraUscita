@@ -56,13 +56,26 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         Calendar cal;
         String s;
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget);
+       // views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Verifico quale tipo di widget sono (normale o host)
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
         int category = options.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, -1);
         boolean isLockScreen = category == AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD;
+
+        // Aggiorno le label
+        cal=Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY,Ora);
+        cal.set(Calendar.MINUTE, Minuto);
+        cal.add(Calendar.HOUR_OF_DAY, 7);
+        cal.add(Calendar.MINUTE, 42);
+
+        s=String.format("%02d",Ora)+ ":"+String.format("%02d",Minuto);
+        remoteViews.setTextViewText(R.id.OraIngressoTXT,s);
+
+        s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
+        remoteViews.setTextViewText(R.id.OraUscitaTXT, s);
 
         // imposto il click solo se non sono un host widget
         // TODO: non funziona... Messo if (false) per evitare di compilarlo.
@@ -73,51 +86,16 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
             Intent launchActivity = new Intent(context,MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context,0 , launchActivity, 0 );
 
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget);
-
             remoteViews.setOnClickPendingIntent(R.id.calcola_ora_uscitaWDG, pendingIntent);
-
-            appWidgetManager.updateAppWidget(appWidgetId,remoteViews);
-            /*
-            ComponentName thisWidget = new ComponentName(context, CalcolaOraUscitaWidget.class);
-            AppWidgetManager manager = AppWidgetManager.getInstance(context);
-            manager.updateAppWidget(thisWidget, remoteViews);
-            */
         }
 
-        // Aggiorno le label
-        cal=Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY,Ora);
-        cal.set(Calendar.MINUTE, Minuto);
-        cal.add(Calendar.HOUR_OF_DAY, 7);
-        cal.add(Calendar.MINUTE, 42);
 
-        s=String.format("%02d",Ora)+ ":"+String.format("%02d",Minuto);
-        views.setTextViewText(R.id.OraIngressoTXT,s);
-
-        s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
-        views.setTextViewText(R.id.OraUscitaTXT,s);
+        //ComponentName thisWidget = new ComponentName(context, CalcolaOraUscitaWidget.class);
+        //AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        //appWidgetManager.updateAppWidget(thisWidget, remoteViews);
 
         // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-
-/*
-    // Register an onClickListener
-      Intent intent = new Intent(context, MyWidgetProvider.class);
-
-      intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-      intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-      PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-          0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-      remoteViews.setOnClickPendingIntent(R.id.update, pendingIntent);
-      appWidgetManager.updateAppWidget(widgetId, remoteViews);
-  */
-        /*
-        ComponentName thisWidget = new ComponentName(context, CalcolaOraUscitaWidget.class);
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.updateAppWidget(thisWidget, remoteViews);
-        */
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
 
     @Override
