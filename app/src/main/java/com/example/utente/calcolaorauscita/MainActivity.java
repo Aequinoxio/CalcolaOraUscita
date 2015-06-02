@@ -5,6 +5,7 @@ import java.util.*;
 import android.app.AlertDialog;
 
 import android.appwidget.AppWidgetManager;
+import android.content.res.Resources;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.view.Menu;
@@ -53,6 +54,10 @@ public class MainActivity extends ActionBarActivity {
     protected Calendar calIn;
     protected Calendar calOut;
 
+    // Profilo orario giornaliero diverso per ciascun giorno della settimana
+    private int[] profiloOraGiorno;
+    private int[] profiloMinutoGiorno;
+
     // Keys per salvare e recuperare lo stato dell'attivita
     private static final String SET_BUTTON= "SET_BUTTON";
     private static final String UPDATE_BUTTON= "UPDATE_BUTTON";
@@ -60,15 +65,33 @@ public class MainActivity extends ActionBarActivity {
     private static final String TIMEPICKER_BUTTON= "TIMEPICKER_BUTTON";
     private static final String STATO_ORA ="ORA";
     private static final String STATO_MINUTO ="MINUTO";
+    private static final String STATO_PROFILO_ORA_ARRAY="STATO_PROFILO_ORA_ARRAY";
+    private static final String STATO_PROFILO_MINUTO_ARRAY="STATO_PROFILO_MINUTO_ARRAY";
+    private static final String STATO_ORA_PROFILO ="ORA_PROFILO";
+    private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
 
-    // Vriabili per memorizzare data e ora. Usate per memorizzare lo stato e per
+
+    // Variabili per memorizzare data e ora. Usate per memorizzare lo stato e per
     // ripristinare i valori corretti dopo lo stop dell'Activity
     private int Ora,Minuto;
+
+    // Costanti per calcolare il buono pasto (6:31)
+    private static final int oraBuonoPasto = 6;
+    private static final int minutoBuonoPasto = 31;
+
+    // Appoggio per il timepicker del profilo orario
+    private int profiloOra, profiloMinuto;
+    private int profiloLBLClicked;  // id della label clickata TODO: Penso che si possa fare di meglio
+    private int giornoSettimanaProfiloClick; // giorno della settimana ricavato dalle label su cui si e' cliccato TODO: Si puo' fare di meglio, non riesco a referenziare il giorno definito all'esterno della classe inlinea - probabilmente va ridefinito il timepicker come dialog a se
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // alloco 5 interi per ore e minuti che costituiscono il profilo orario giornaliero
+        profiloOraGiorno = new int[5];
+        profiloMinutoGiorno = new int [5];
 
         setOraIngresso = (Button) findViewById(R.id.buttonSetOraIngresso);
         updateOraIngresso = (Button) findViewById(R.id.buttonUpdateOraIngresso);
@@ -83,12 +106,16 @@ public class MainActivity extends ActionBarActivity {
         calIn = Calendar.getInstance();
         calOut = Calendar.getInstance();
 
-        // Ripristimo o imposto l'ora di ingresso e calcolo l'ora di uscita
+        // Ripristino o imposto l'ora di ingresso e calcolo l'ora di uscita
         if (savedInstanceState != null) {
             Boolean  buttonEnabled;
 
+            // Recupero stato
             Ora= savedInstanceState.getInt(STATO_ORA);
             Minuto =savedInstanceState.getInt(STATO_MINUTO);
+            profiloOraGiorno=savedInstanceState.getIntArray(STATO_PROFILO_ORA_ARRAY);
+            profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
+
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
             calIn.set(Calendar.MINUTE,Minuto);
 
@@ -109,8 +136,27 @@ public class MainActivity extends ActionBarActivity {
         } else {
             // Restore preferences
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+            // Recupero l'ora salvata a suo tempo
             Ora = settings.getInt(STATO_ORA, 8);
             Minuto = settings.getInt(STATO_MINUTO,0);
+
+            // Recupero il profilo orario
+            // ora
+            String savedString;
+            savedString = settings.getString(STATO_PROFILO_ORA_ARRAY, getString(R.string.DEFAULT_PROFILO_ORA));
+            StringTokenizer st = new StringTokenizer(savedString,getString(R.string.SEPARATORE_CAMPI));
+            for (int i = 0; i < 5; i++) {
+                profiloOraGiorno[i] = Integer.parseInt(st.nextToken());
+            }
+
+            // minuto
+            savedString = settings.getString(STATO_PROFILO_MINUTO_ARRAY, getString(R.string.DEFAULT_PROFILO_MINUTO));
+            st = new StringTokenizer(savedString,getString(R.string.SEPARATORE_CAMPI));
+            for (int i = 0; i < 5; i++) {
+                profiloMinutoGiorno[i] = Integer.parseInt(st.nextToken());
+            }
+
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
             calIn.set(Calendar.MINUTE,Minuto);
             aggiornaValori();
@@ -156,8 +202,13 @@ public class MainActivity extends ActionBarActivity {
         String s;
 
         calOut.setTime(calIn.getTime());
-        calOut.add(Calendar.HOUR, 7);
-        calOut.add(Calendar.MINUTE, 42);
+
+        // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
+        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK)-2; // TODO: Workaround per ora. In futuro usare una lista ed foreach
+        profiloOra=profiloOraGiorno[giornoSettimana];
+        profiloMinuto=profiloMinutoGiorno[giornoSettimana];
+        calOut.add(Calendar.HOUR, profiloOra);
+        calOut.add(Calendar.MINUTE, profiloMinuto);
 
         TextView testo;
 
@@ -181,6 +232,42 @@ public class MainActivity extends ActionBarActivity {
 
         testo.setText(s);
 
+        // Evidenzio il giorno corrente della settimana
+        int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
+        int oldTextId=0;
+        switch (giornoSettimana+2){ // TODO: workaround per ora
+            case Calendar.MONDAY: textID=R.id.lunLBL; oldTextId=R.id.venLBL; break;
+            case Calendar.TUESDAY:  textID=R.id.marLBL; oldTextId=R.id.lunLBL; break;
+            case Calendar.WEDNESDAY: textID=R.id.merLBL; oldTextId=R.id.marLBL;break;
+            case Calendar.THURSDAY: textID=R.id.gioLBL; oldTextId=R.id.merLBL;break;
+            case Calendar.FRIDAY:   textID=R.id.venLBL; oldTextId=R.id.gioLBL;break;
+        }
+        // imposto il nuovo sfondo
+        testo = (TextView) findViewById(textID);
+        Resources res = getResources();
+        testo.setBackground(res.getDrawable(R.color.button_material_light));
+
+        // Cancello il vecchio
+        testo = (TextView) findViewById(oldTextId);
+        testo.setBackground(null);
+
+        // Imposto le label dei profili orari
+        testo = (TextView) findViewById(R.id.profiloLunVal);
+        testo.setText(String.format("%02d",profiloOraGiorno[0])+ ":"+String.format("%02d",profiloMinutoGiorno[0]));
+
+        testo = (TextView) findViewById(R.id.profiloMarVal);
+        testo.setText(String.format("%02d",profiloOraGiorno[1])+ ":"+String.format("%02d",profiloMinutoGiorno[1]));
+
+        testo = (TextView) findViewById(R.id.profiloMerVal);
+        testo.setText(String.format("%02d", profiloOraGiorno[2]) + ":" + String.format("%02d", profiloMinutoGiorno[2]));
+
+        testo = (TextView) findViewById(R.id.profiloGioVal);
+        testo.setText(String.format("%02d",profiloOraGiorno[3])+ ":"+String.format("%02d",profiloMinutoGiorno[3]));
+
+        testo = (TextView) findViewById(R.id.profiloVenVal);
+        testo.setText(String.format("%02d",profiloOraGiorno[4])+ ":"+String.format("%02d",profiloMinutoGiorno[4]));
+
+        // Imposto i pulsanti
         setOraIngresso.setEnabled(false);
         updateOraIngresso.setEnabled(true);
         annullaUpdateOraIngresso.setEnabled(false);
@@ -190,17 +277,12 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, CalcolaOraUscitaWidget.class);
         intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
         intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET),Minuto);
+
+        intent.putExtra(STATO_ORA_PROFILO, profiloOra);
+        intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+
         sendBroadcast(intent);
-
-        /*
-        // Aggiorno direttamente i widget
-        int widgetIDs[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), CalcolaOraUscitaWidget.class));
-
-        for (int id : widgetIDs)
-            AppWidgetManager.getInstance(getApplication()).notifyAppWidgetViewDataChanged(id, R.layout.calcola_ora_uscita_widget);
-        */
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,6 +298,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        /*
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             new AlertDialog.Builder(MainActivity.this)
@@ -228,6 +311,7 @@ public class MainActivity extends ActionBarActivity {
                     }).show();
             return true;
         }
+*/
 
         if (id == R.id.action_about) {
             String s = getString(R.string.app_name) +"\nVersione " + BuildConfig.VERSION_NAME ;
@@ -250,12 +334,31 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop(){
         super.onStop();
 
+        // Salvo tutto in SharedPreferences
+        // TODO: Trovare un metodo migliore (forse conviene usare una classe ad hoc (preferenceActivity) see http://stackoverflow.com/questions/3876680/is-it-possible-to-add-an-array-or-object-to-sharedpreferences-on-android
+
         // We need an Editor object to make preference changes.
         // All objects are from android.context.Context
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(STATO_ORA, Ora);
         editor.putInt(STATO_MINUTO, Minuto);
+
+        // Salvo il profilo orario
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < profiloOraGiorno.length; i++) {
+            str.append(profiloOraGiorno[i]).append(getString(R.string.SEPARATORE_CAMPI));
+        }
+        editor.putString(STATO_PROFILO_ORA_ARRAY, str.toString());
+
+        str.delete(0,str.length());
+        for (int i = 0; i < profiloMinutoGiorno.length; i++) {
+            str.append(profiloMinutoGiorno[i]).append(getString(R.string.SEPARATORE_CAMPI));
+        }
+        editor.putString(STATO_PROFILO_MINUTO_ARRAY, str.toString());
+
+        editor.putInt(STATO_ORA_PROFILO,profiloOra);
+        editor.putInt(STATO_MINUTO_PROFILO,profiloMinuto);
 
         // Commit the edits!
         editor.commit();
@@ -266,10 +369,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
+        // Recupero l'ora e minuto salvati e lo stato dell'array dei profili da savedInstanceState
         Ora=savedInstanceState.getInt(STATO_ORA);
         Minuto=savedInstanceState.getInt(STATO_MINUTO);
+        profiloOraGiorno=savedInstanceState.getIntArray(STATO_PROFILO_ORA_ARRAY);
+        profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
+
         calIn.set(Calendar.HOUR_OF_DAY, Ora);
-        calIn.set(Calendar.MINUTE,Minuto);
+        calIn.set(Calendar.MINUTE, Minuto);
 
         aggiornaValori();
     }
@@ -283,7 +390,10 @@ public class MainActivity extends ActionBarActivity {
         outState.putBoolean(ANNULLA_BUTTON, annullaUpdateOraIngresso.isEnabled());
 
         outState.putInt(STATO_ORA, Ora);
-        outState.putInt(STATO_MINUTO,Minuto);
+        outState.putInt(STATO_MINUTO, Minuto);
+
+        outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
+        outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
     }
 
     public void showTimePickerDialog(View v) {
@@ -306,5 +416,42 @@ public class MainActivity extends ActionBarActivity {
 
         mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
         mTimePicker.show();
+    }
+
+    public void showTimePickerDialogProfilo(View v) {
+        TimePickerDialog mTimePicker;
+
+        profiloLBLClicked=v.getId();
+
+        switch (profiloLBLClicked){ // TODO: workaround per ora
+            case R.id.profiloLunVal: giornoSettimanaProfiloClick=0 ; break;
+            case R.id.profiloMarVal: giornoSettimanaProfiloClick=1 ;break;
+            case R.id.profiloMerVal: giornoSettimanaProfiloClick=2 ;break;
+            case R.id.profiloGioVal: giornoSettimanaProfiloClick=3 ;break;
+            case R.id.profiloVenVal: giornoSettimanaProfiloClick=4 ;break;
+        }
+
+        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                profiloOra=selectedHour;
+                profiloMinuto=selectedMinute;
+                aggiornaProfili();
+            }
+        }, profiloOraGiorno[giornoSettimanaProfiloClick], profiloMinutoGiorno[giornoSettimanaProfiloClick], true);//Yes 24 hour time
+
+        mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
+        mTimePicker.show();
+    }
+
+    private void aggiornaProfili(){
+        // Aggiorno i valori e la label
+        profiloOraGiorno[giornoSettimanaProfiloClick]=profiloOra;
+        profiloMinutoGiorno[giornoSettimanaProfiloClick]=profiloMinuto;
+
+        TextView testo = (TextView) findViewById(profiloLBLClicked);
+        testo.setText(String.format("%02d", profiloOra) + ":" + String.format("%02d", profiloMinuto));
+
+
     }
 }

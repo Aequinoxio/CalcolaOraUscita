@@ -1,5 +1,11 @@
 package com.example.utente.calcolaorauscita;
 
+/*
+    TODO: aggiornare immediatamente l'ora di uscita se cambia il profilo orario del giorno attuale
+            da fare anche nella main activity
+
+ */
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -20,10 +26,17 @@ import java.util.Calendar;
  */
 public class CalcolaOraUscitaWidget extends AppWidgetProvider {
 
+    // TODO: Attenzione costanti cablate
     private static int Ora=8,Minuto=0;
+    private static int oraProfilo=7, minutoProfilo=42;
+    private static int oraBuonoPasto=6, minutoBuonoPasto=31;
+
     public static final String PREFS_NAME = "CalcolaOraUscita";
     private static final String STATO_ORA ="ORA";
     private static final String STATO_MINUTO ="MINUTO";
+    private static final String STATO_ORA_PROFILO ="ORA_PROFILO";
+    private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
+
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -56,8 +69,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         Calendar cal;
         String s;
         // Construct the RemoteViews object
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget);
-       // views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget_icon);
 
         // Verifico quale tipo di widget sono (normale o host)
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
@@ -65,22 +77,29 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         boolean isLockScreen = category == AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD;
 
         // Aggiorno le label
+        // TODO: usare il profilo giornaliero prendendolo dalla shared prefs (da fare nella main activity o nei parametri dell'intent)
         cal=Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY,Ora);
         cal.set(Calendar.MINUTE, Minuto);
-        cal.add(Calendar.HOUR_OF_DAY, 7);
-        cal.add(Calendar.MINUTE, 42);
+        cal.add(Calendar.HOUR_OF_DAY, oraProfilo);
+        cal.add(Calendar.MINUTE, minutoProfilo);
 
         s=String.format("%02d",Ora)+ ":"+String.format("%02d",Minuto);
-        remoteViews.setTextViewText(R.id.OraIngressoTXT,s);
+        remoteViews.setTextViewText(R.id.OraIngressoTXT, s);
 
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraUscitaTXT, s);
 
+        // Imposto il buono pasto
+        cal.set(Calendar.HOUR_OF_DAY,Ora);
+        cal.set(Calendar.MINUTE, Minuto);
+        cal.add(Calendar.HOUR_OF_DAY, oraBuonoPasto);
+        cal.add(Calendar.MINUTE, minutoBuonoPasto);
+
+        s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
+        remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
+
         // imposto il click solo se non sono un host widget
-        // TODO: non funziona... Messo if (false) per evitare di compilarlo.
-        // TODO: il problema è che l'host widget non si aggiorna più e il contenuto delle label tornano al valore di default
-        // TODO: sembra funzionare anche se eliminando la condizione dell'if non intercetta il click sull'host widget
         if (!isLockScreen){
             // When we click the widget, we want to open our main activity.
             Intent launchActivity = new Intent(context,MainActivity.class);
@@ -89,12 +108,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.calcola_ora_uscitaWDG, pendingIntent);
         }
 
-
-        //ComponentName thisWidget = new ComponentName(context, CalcolaOraUscitaWidget.class);
-        //AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        //appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
 
@@ -120,10 +133,14 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         String s=context.getString(R.string.ORA_INGRESSO_WIDGET);
 
         // Recupero i parametri dell'ora di ingresso oppure dalle shared prefs
-        // TODO: verificare se sia il metoso migliore oppure se occorre lascuare una istanza di aggiornamneto in background o altro
+        // TODO: verificare se sia il metodo migliore oppure se occorre lasciare una istanza di aggiornamneto in background o altro
         if (intent.hasExtra(s)) {
+            // TODO : Attenzione constanti cablate!
             Ora = intent.getIntExtra(s, 8);
             Minuto = intent.getIntExtra(context.getString(R.string.MINUTO_INGRESSO_WIDGET), 0);
+            oraProfilo=intent.getIntExtra(STATO_ORA_PROFILO,7);
+            minutoProfilo=intent.getIntExtra(STATO_MINUTO_PROFILO,42);
+
         } else {
             aggiornaWidgetData(context);
         }
@@ -135,6 +152,8 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         Ora = settings.getInt(STATO_ORA, 8);
         Minuto = settings.getInt(STATO_MINUTO, 0);
+        oraProfilo=settings.getInt(STATO_ORA_PROFILO, 7);
+        minutoProfilo=settings.getInt(STATO_MINUTO_PROFILO, 42);
     }
 }
 

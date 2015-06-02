@@ -1,0 +1,96 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin" android:background="@android:color/transparent"
+    android:id="@+id/calcola_ora_uscitaWDG"
+    android:clickable="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+            android:background="@drawable/roundedrect"
+            android:backgroundTint="@android:color/background_dark"
+            android:clickable="false">
+
+            <TextView
+                android:id="@+id/OraUscitaTXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/OraUscitaValueWidgetLBL"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:textStyle="bold|italic"
+                android:contentDescription="@string/appwidget_text"
+                android:background="@android:color/transparent"
+                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                android:layout_alignTop="@+id/OraIngressoTXT"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/OraIngressoTXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/OraIngressoValueWidgetLBL"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:textStyle="bold|italic"
+                android:contentDescription="@string/appwidget_text"
+                android:background="@android:color/transparent"
+                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/imageView" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:src="@drawable/ic_exit_to_app_white_18dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2"
+                android:src="@drawable/ic_launch_white_18dp"
+                android:layout_alignTop="@+id/OraIngressoTXT"
+                android:layout_toLeftOf="@+id/OraUscitaTXT"
+                android:layout_toStartOf="@+id/OraUscitaTXT" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView3"
+                android:src="@drawable/ic_description_white_18dp"
+                android:layout_alignTop="@+id/OraBuonoPastoTXT"
+                android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
+                android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
+
+            <TextView
+                android:id="@+id/OraBuonoPastoTXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/OraUscitaValueWidgetLBL"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:textStyle="bold|italic"
+                android:contentDescription="@string/appwidget_text"
+                android:background="@android:color/transparent"
+                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
