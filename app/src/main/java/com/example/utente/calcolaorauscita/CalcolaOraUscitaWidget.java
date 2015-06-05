@@ -71,7 +71,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         // TODO: Rendere parametrico il layout sulla base di quanto definito in AndroidManifest.xml
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),appWidgetManager.getAppWidgetInfo(appWidgetId).initialLayout);
-           //     R.layout.calcola_ora_uscita_widget_icon_2x2);
 
         // Verifico quale tipo di widget sono (normale o host)
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
