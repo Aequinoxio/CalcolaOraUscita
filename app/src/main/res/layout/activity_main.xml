@@ -64,7 +64,6 @@
                     android:editable="false"
                     android:fadeScrollbars="false"
                     android:textColor="@android:color/black"
-                    android:background="@color/button_material_light"
                     android:paddingLeft="@dimen/margin_small" />
 
                 <TextView

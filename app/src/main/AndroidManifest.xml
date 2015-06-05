@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".CalcolaOraUscitaWidget" >
+        <receiver android:name=".CalcolaOraUscitaWidget" android:label="@string/linear_widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -26,6 +26,27 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/calcola_ora_uscita_widget_info" />
         </receiver>
+
+        <receiver android:name=".CalcolaOraUscitaWidget_2x2" android:label="@string/square_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calcola_ora_uscita_widget_info_2x2" />
+        </receiver>
+
+        <receiver android:name=".CalcolaOraUscitaWidget_1x1" android:label="@string/little_square_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calcola_ora_uscita_widget_info_1x1" />
+        </receiver>
+
     </application>
 
 </manifest>

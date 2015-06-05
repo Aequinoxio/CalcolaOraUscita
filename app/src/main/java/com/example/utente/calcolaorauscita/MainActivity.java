@@ -276,12 +276,32 @@ public class MainActivity extends ActionBarActivity {
         // Invio un broadcast ai widget con i valori aggiornati di ora e minuto ingresso
         Intent intent = new Intent(this, CalcolaOraUscitaWidget.class);
         intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
+        intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET), Minuto);
+
+        intent.putExtra(STATO_ORA_PROFILO, profiloOra);
+        intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+
+        sendBroadcast(intent);
+
+        // TODO: Sto provando ad aggiornare anche gli altri widget anche se mi sembra strano farlo così...
+        intent = new Intent(this, CalcolaOraUscitaWidget_2x2.class);
+        intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
         intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET),Minuto);
 
         intent.putExtra(STATO_ORA_PROFILO, profiloOra);
         intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
 
         sendBroadcast(intent);
+
+        intent = new Intent(this, CalcolaOraUscitaWidget_1x1.class);
+        intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
+        intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET),Minuto);
+
+        intent.putExtra(STATO_ORA_PROFILO, profiloOra);
+        intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+
+        sendBroadcast(intent);
+
     }
 
     @Override

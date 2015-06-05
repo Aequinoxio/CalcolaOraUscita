@@ -65,11 +65,13 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+        //CharSequence widgetText = context.getString(R.string.appwidget_text);
         Calendar cal;
         String s;
         // Construct the RemoteViews object
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.calcola_ora_uscita_widget_icon);
+        // TODO: Rendere parametrico il layout sulla base di quanto definito in AndroidManifest.xml
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),appWidgetManager.getAppWidgetInfo(appWidgetId).initialLayout);
+           //     R.layout.calcola_ora_uscita_widget_icon_2x2);
 
         // Verifico quale tipo di widget sono (normale o host)
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
@@ -156,4 +158,5 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         minutoProfilo=settings.getInt(STATO_MINUTO_PROFILO, 42);
     }
 }
+
 

@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:background="@android:color/transparent"
+    android:id="@+id/calcola_ora_uscitaWDG"
+    android:clickable="true"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/roundedrect"
+        android:backgroundTint="@android:color/background_dark"
+        android:clickable="false"
+        android:paddingTop="@dimen/abc_action_bar_default_padding_material"
+        android:paddingBottom="@dimen/abc_action_bar_default_padding_material">
+
+        <TextView
+            android:id="@+id/OraUscitaTXT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/OraUscitaValueWidgetLBL"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:textStyle="bold|italic"
+            android:contentDescription="@string/appwidget_text"
+            android:background="@android:color/transparent"
+            android:paddingLeft="@dimen/abc_action_bar_navigation_padding_start_material"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView2"
+            android:layout_toEndOf="@+id/imageView2" />
+
+        <TextView
+            android:id="@+id/OraIngressoTXT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/OraIngressoValueWidgetLBL"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:textStyle="bold|italic"
+            android:contentDescription="@string/appwidget_text"
+            android:background="@android:color/transparent"
+            android:paddingLeft="@dimen/abc_action_bar_navigation_padding_start_material"
+            android:layout_centerInParent="@+id/imageView"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView" />
+
+        <TextView
+            android:id="@+id/OraBuonoPastoTXT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/OraUscitaValueWidgetLBL"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:textStyle="bold|italic"
+            android:contentDescription="@string/appwidget_text"
+            android:background="@android:color/transparent"
+            android:paddingLeft="@dimen/abc_action_bar_navigation_padding_start_material"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/OraUscitaTXT"
+            android:layout_alignStart="@+id/OraUscitaTXT" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/ic_exit_to_app_white_18dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/ic_launch_white_18dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:id="@+id/imageView3"
+            android:src="@drawable/ic_description_white_18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

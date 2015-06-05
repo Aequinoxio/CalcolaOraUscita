@@ -38,4 +38,8 @@
     <string name="merLBLValue">Mer</string>
     <string name="gioLBLValue">Gio</string>
     <string name="venLBLValue">Ven</string>
+
+    <string name="linear_widget_name">Calcola ora uscita lungo</string>
+    <string name="square_widget_name">Calcola ora uscita quadrato</string>
+    <string name="little_square_widget_name">Calcola ora uscita quadrato piccolo</string>
 </resources>
