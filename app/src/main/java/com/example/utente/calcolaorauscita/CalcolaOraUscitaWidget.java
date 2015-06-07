@@ -100,6 +100,10 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
 
+        // Aggiorno la data di aggiornamento
+        s=String.format("%02d", cal.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", cal.get(Calendar.MONTH)) + "/" + String.format("%04d", cal.get(Calendar.YEAR));
+        remoteViews.setTextViewText(R.id.dataAggiornamento, s);
+
         // imposto il click solo se non sono un host widget
         if (!isLockScreen){
             // When we click the widget, we want to open our main activity.

@@ -1,5 +1,6 @@
 package com.example.utente.calcolaorauscita;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import android.app.AlertDialog;
@@ -69,11 +70,12 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATO_PROFILO_MINUTO_ARRAY="STATO_PROFILO_MINUTO_ARRAY";
     private static final String STATO_ORA_PROFILO ="ORA_PROFILO";
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
-
+    private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
     // Variabili per memorizzare data e ora. Usate per memorizzare lo stato e per
     // ripristinare i valori corretti dopo lo stop dell'Activity
     private int Ora,Minuto;
+    private String dataAggiornamento;
 
     // Costanti per calcolare il buono pasto (6:31)
     private static final int oraBuonoPasto = 6;
@@ -81,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
 
     // Appoggio per il timepicker del profilo orario
     private int profiloOra, profiloMinuto;
-    private int profiloLBLClicked;  // id della label clickata TODO: Penso che si possa fare di meglio
+    private int profiloLBLClicked;  // id della label cliccata TODO: Penso che si possa fare di meglio
     private int giornoSettimanaProfiloClick; // giorno della settimana ricavato dalle label su cui si e' cliccato TODO: Si puo' fare di meglio, non riesco a referenziare il giorno definito all'esterno della classe inlinea - probabilmente va ridefinito il timepicker come dialog a se
 
     @Override
@@ -115,6 +117,14 @@ public class MainActivity extends ActionBarActivity {
             Minuto =savedInstanceState.getInt(STATO_MINUTO);
             profiloOraGiorno=savedInstanceState.getIntArray(STATO_PROFILO_ORA_ARRAY);
             profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
+
+            try {
+                dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+                calIn.setTime(sdf.parse(dataAggiornamento));
+            }catch(Exception e){
+                calIn = Calendar.getInstance();
+            }
 
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
             calIn.set(Calendar.MINUTE,Minuto);
@@ -157,8 +167,16 @@ public class MainActivity extends ActionBarActivity {
                 profiloMinutoGiorno[i] = Integer.parseInt(st.nextToken());
             }
 
+            try {
+                dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+                calIn.setTime(sdf.parse(dataAggiornamento));
+            }catch(Exception e){
+                calIn = Calendar.getInstance();
+            }
+
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
-            calIn.set(Calendar.MINUTE,Minuto);
+            calIn.set(Calendar.MINUTE, Minuto);
             aggiornaValori();
         }
 
@@ -203,8 +221,15 @@ public class MainActivity extends ActionBarActivity {
 
         calOut.setTime(calIn.getTime());
 
+        calOut=calIn;
+
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
         int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK)-2; // TODO: Workaround per ora. In futuro usare una lista ed foreach
+
+        // TODO: Workaround... se il giorno della settimana è negativo allora sono in sabato o domenica -> resetto a lunedì
+        if (giornoSettimana<0)
+            giornoSettimana=0;
+
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];
         calOut.add(Calendar.HOUR, profiloOra);
@@ -253,7 +278,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Imposto le label dei profili orari
         testo = (TextView) findViewById(R.id.profiloLunVal);
-        testo.setText(String.format("%02d",profiloOraGiorno[0])+ ":"+String.format("%02d",profiloMinutoGiorno[0]));
+        testo.setText(String.format("%02d", profiloOraGiorno[0]) + ":" + String.format("%02d", profiloMinutoGiorno[0]));
 
         testo = (TextView) findViewById(R.id.profiloMarVal);
         testo.setText(String.format("%02d",profiloOraGiorno[1])+ ":"+String.format("%02d",profiloMinutoGiorno[1]));
@@ -266,6 +291,12 @@ public class MainActivity extends ActionBarActivity {
 
         testo = (TextView) findViewById(R.id.profiloVenVal);
         testo.setText(String.format("%02d",profiloOraGiorno[4])+ ":"+String.format("%02d",profiloMinutoGiorno[4]));
+
+        // Aggiorno la data di aggiornamento
+        testo = (TextView) findViewById(R.id.dataAggiornamento);
+        dataAggiornamento=String.format("%02d", calOut.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calOut.get(Calendar.MONTH)) + "/" + String.format("%04d", calOut.get(Calendar.YEAR));
+        testo.setText(dataAggiornamento);
+
 
         // Imposto i pulsanti
         setOraIngresso.setEnabled(false);
@@ -371,14 +402,16 @@ public class MainActivity extends ActionBarActivity {
         }
         editor.putString(STATO_PROFILO_ORA_ARRAY, str.toString());
 
-        str.delete(0,str.length());
+        str.delete(0, str.length());
         for (int i = 0; i < profiloMinutoGiorno.length; i++) {
             str.append(profiloMinutoGiorno[i]).append(getString(R.string.SEPARATORE_CAMPI));
         }
         editor.putString(STATO_PROFILO_MINUTO_ARRAY, str.toString());
 
-        editor.putInt(STATO_ORA_PROFILO,profiloOra);
+        editor.putInt(STATO_ORA_PROFILO, profiloOra);
         editor.putInt(STATO_MINUTO_PROFILO,profiloMinuto);
+
+        editor.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
 
         // Commit the edits!
         editor.commit();
@@ -394,6 +427,15 @@ public class MainActivity extends ActionBarActivity {
         Minuto=savedInstanceState.getInt(STATO_MINUTO);
         profiloOraGiorno=savedInstanceState.getIntArray(STATO_PROFILO_ORA_ARRAY);
         profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
+
+        dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
+        SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            calIn.setTime(sdf.parse(dataAggiornamento));
+        }catch(Exception e){
+            calIn = Calendar.getInstance();
+        }
 
         calIn.set(Calendar.HOUR_OF_DAY, Ora);
         calIn.set(Calendar.MINUTE, Minuto);
@@ -414,6 +456,7 @@ public class MainActivity extends ActionBarActivity {
 
         outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
         outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
+        outState.putString(STATO_DATA_AGGIORNAMENTO,dataAggiornamento);
     }
 
     public void showTimePickerDialog(View v) {
