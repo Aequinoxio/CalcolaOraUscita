@@ -221,8 +221,6 @@ public class MainActivity extends ActionBarActivity {
 
         calOut.setTime(calIn.getTime());
 
-        calOut=calIn;
-
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
         int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK)-2; // TODO: Workaround per ora. In futuro usare una lista ed foreach
 
