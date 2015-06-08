@@ -120,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
 
             try {
                 dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                 calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
                 calIn = Calendar.getInstance();
@@ -169,7 +169,7 @@ public class MainActivity extends ActionBarActivity {
 
             try {
                 dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                 calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
                 calIn = Calendar.getInstance();
@@ -292,7 +292,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Aggiorno la data di aggiornamento
         testo = (TextView) findViewById(R.id.dataAggiornamento);
-        dataAggiornamento=String.format("%02d", calOut.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calOut.get(Calendar.MONTH)) + "/" + String.format("%04d", calOut.get(Calendar.YEAR));
+        dataAggiornamento=String.format("%02d", calIn.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calIn.get(Calendar.MONTH)) + "/" + String.format("%04d", calIn.get(Calendar.YEAR));
         testo.setText(dataAggiornamento);
 
 
@@ -427,7 +427,7 @@ public class MainActivity extends ActionBarActivity {
         profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
 
         dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-        SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
 
         try {
             calIn.setTime(sdf.parse(dataAggiornamento));
