@@ -17,21 +17,40 @@
             android:backgroundTint="@android:color/background_dark"
             android:clickable="false">
 
-            <TextView
-                android:id="@+id/OraUscitaTXT"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/OraUscitaValueWidgetLBL"
-                android:textColor="#ffffff"
-                android:textSize="24sp"
-                android:textStyle="bold|italic"
-                android:contentDescription="@string/appwidget_text"
-                android:background="@android:color/transparent"
-                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
                 android:layout_alignTop="@+id/OraIngressoTXT"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:textIsSelectable="false" />
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:id="@+id/imageView2"
+                    android:src="@drawable/ic_launch_white_36dp"
+                    android:layout_alignTop="@+id/OraUscitaTXT"
+                    android:layout_toLeftOf="@+id/OraUscitaTXT"
+                    android:layout_toStartOf="@+id/OraUscitaTXT" />
+
+                <TextView
+                    android:id="@+id/OraUscitaTXT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/OraUscitaValueWidgetLBL"
+                    android:textColor="#ffffff"
+                    android:textSize="24sp"
+                    android:textStyle="bold|italic"
+                    android:contentDescription="@string/appwidget_text"
+                    android:background="@android:color/transparent"
+                    android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                    android:layout_alignTop="@+id/OraIngressoTXT"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:textIsSelectable="false"
+                    android:paddingTop="@dimen/margin_tiny" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/OraIngressoTXT"
@@ -58,15 +77,6 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:id="@+id/imageView2"
-                android:src="@drawable/ic_launch_white_36dp"
-                android:layout_alignTop="@+id/OraUscitaTXT"
-                android:layout_toLeftOf="@+id/OraUscitaTXT"
-                android:layout_toStartOf="@+id/OraUscitaTXT" />
 
             <ImageView
                 android:layout_width="36dp"
