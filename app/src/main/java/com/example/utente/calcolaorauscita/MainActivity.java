@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 
 import android.appwidget.AppWidgetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.view.Menu;
@@ -120,10 +121,10 @@ public class MainActivity extends ActionBarActivity {
 
             try {
                 dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-                calIn.setTime(sdf.parse(dataAggiornamento));
+//                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+//                calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
-                calIn = Calendar.getInstance();
+//                calIn = Calendar.getInstance();
             }
 
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
@@ -168,11 +169,11 @@ public class MainActivity extends ActionBarActivity {
             }
 
             try {
-                dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-                calIn.setTime(sdf.parse(dataAggiornamento));
+                dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO, getString(R.string.default_hour_min_value));
+//                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+//                calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
-                calIn = Calendar.getInstance();
+//                calIn = Calendar.getInstance();
             }
 
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
@@ -218,61 +219,68 @@ public class MainActivity extends ActionBarActivity {
 
     protected void aggiornaValori(){
         String s;
+        TextView testo;
+        Resources res = getResources();
 
+        // Aggiorno l'ora per il buono pasto
         calOut.setTime(calIn.getTime());
+        calOut.add(Calendar.HOUR_OF_DAY, oraBuonoPasto);
+        calOut.add(Calendar.MINUTE, minutoBuonoPasto);
+        testo = (TextView) findViewById(R.id.textBuonoPasto);
+        s=String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",calOut.get(Calendar.MINUTE));
+        testo.setText(s);
 
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
-        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK)-2; // TODO: Workaround per ora. In futuro usare una lista ed foreach
+        calOut.setTime(calIn.getTime());
 
-        // TODO: Workaround... se il giorno della settimana è negativo allora sono in sabato o domenica -> resetto a lunedì
-        if (giornoSettimana<0)
-            giornoSettimana=0;
+        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+
+        int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
+
+        switch (giornoSettimana){ // TODO: workaround per ora
+            case Calendar.SATURDAY :
+            case Calendar.SUNDAY:
+            case Calendar.MONDAY: textID=R.id.lunLBL; giornoSettimana=0; break;
+            case Calendar.TUESDAY:  textID=R.id.marLBL; giornoSettimana=1; break;
+            case Calendar.WEDNESDAY: textID=R.id.merLBL; giornoSettimana=2;break;
+            case Calendar.THURSDAY: textID=R.id.gioLBL; giornoSettimana=3;break;
+            case Calendar.FRIDAY:   textID=R.id.venLBL; giornoSettimana=4;break;
+        }
+
+//        // TODO: Workaround... se il giorno della settimana è negativo allora sono in sabato o domenica -> resetto a lunedì
+//        if (giornoSettimana0) {
+//            giornoSettimana=0;
+//        }
 
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];
         calOut.add(Calendar.HOUR, profiloOra);
         calOut.add(Calendar.MINUTE, profiloMinuto);
 
-        TextView testo;
-
         testo = (TextView) findViewById(R.id.textOraIngresso);
-
         s=String.format("%02d",calIn.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",calIn.get(Calendar.MINUTE));
-        /*
-        if (debug)
-            Log.i("OraIngresso ", s);
-        */
-
         testo.setText(s);
 
         testo = (TextView) findViewById(R.id.textOraUscita);
         s=String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d", calOut.get(Calendar.MINUTE));
-
-        /*
-        if (debug)
-            Log.i("OraUscita ", s);
-        */
-
         testo.setText(s);
 
         // Evidenzio il giorno corrente della settimana
-        int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
-        int oldTextId=0;
-        switch (giornoSettimana+2){ // TODO: workaround per ora
-            case Calendar.MONDAY: textID=R.id.lunLBL; oldTextId=R.id.venLBL; break;
-            case Calendar.TUESDAY:  textID=R.id.marLBL; oldTextId=R.id.lunLBL; break;
-            case Calendar.WEDNESDAY: textID=R.id.merLBL; oldTextId=R.id.marLBL;break;
-            case Calendar.THURSDAY: textID=R.id.gioLBL; oldTextId=R.id.merLBL;break;
-            case Calendar.FRIDAY:   textID=R.id.venLBL; oldTextId=R.id.gioLBL;break;
-        }
+        // Cancello il vecchio sfondo
+        testo = (TextView) findViewById(R.id.lunLBL);
+        testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.marLBL);
+        testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.merLBL);
+        testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.gioLBL);
+        testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.venLBL);
+        testo.setBackground(null);
+
         // imposto il nuovo sfondo
         testo = (TextView) findViewById(textID);
-        Resources res = getResources();
         testo.setBackground(res.getDrawable(R.color.button_material_light));
-
-        // Cancello il vecchio
-        testo = (TextView) findViewById(oldTextId);
-        testo.setBackground(null);
 
         // Imposto le label dei profili orari
         testo = (TextView) findViewById(R.id.profiloLunVal);
@@ -295,7 +303,6 @@ public class MainActivity extends ActionBarActivity {
         dataAggiornamento=String.format("%02d", calIn.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calIn.get(Calendar.MONTH)) + "/" + String.format("%04d", calIn.get(Calendar.YEAR));
         testo.setText(dataAggiornamento);
 
-
         // Imposto i pulsanti
         setOraIngresso.setEnabled(false);
         updateOraIngresso.setEnabled(true);
@@ -309,6 +316,7 @@ public class MainActivity extends ActionBarActivity {
 
         intent.putExtra(STATO_ORA_PROFILO, profiloOra);
         intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+        intent.putExtra(STATO_DATA_AGGIORNAMENTO,dataAggiornamento);
 
         sendBroadcast(intent);
 
@@ -319,6 +327,7 @@ public class MainActivity extends ActionBarActivity {
 
         intent.putExtra(STATO_ORA_PROFILO, profiloOra);
         intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+        intent.putExtra(STATO_DATA_AGGIORNAMENTO,dataAggiornamento);
 
         sendBroadcast(intent);
 
@@ -328,9 +337,9 @@ public class MainActivity extends ActionBarActivity {
 
         intent.putExtra(STATO_ORA_PROFILO, profiloOra);
         intent.putExtra(STATO_MINUTO_PROFILO, profiloMinuto);
+        intent.putExtra(STATO_DATA_AGGIORNAMENTO,dataAggiornamento);
 
         sendBroadcast(intent);
-
     }
 
     @Override
@@ -427,13 +436,16 @@ public class MainActivity extends ActionBarActivity {
         profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
 
         dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
+
+/*
         SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
 
         try {
             calIn.setTime(sdf.parse(dataAggiornamento));
-        }catch(Exception e){
+        }catch(Exception e) {
             calIn = Calendar.getInstance();
         }
+*/
 
         calIn.set(Calendar.HOUR_OF_DAY, Ora);
         calIn.set(Calendar.MINUTE, Minuto);

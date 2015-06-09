@@ -14,6 +14,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -29,14 +30,16 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
     // TODO: Attenzione costanti cablate
     private static int Ora=8,Minuto=0;
     private static int oraProfilo=7, minutoProfilo=42;
-    private static int oraBuonoPasto=6, minutoBuonoPasto=31;
+    private static final int oraBuonoPasto=6, minutoBuonoPasto=31;
+
+    private static String dataAggiornamento;
 
     public static final String PREFS_NAME = "CalcolaOraUscita";
     private static final String STATO_ORA ="ORA";
     private static final String STATO_MINUTO ="MINUTO";
     private static final String STATO_ORA_PROFILO ="ORA_PROFILO";
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
-
+    private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -82,6 +85,13 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         cal=Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY,Ora);
         cal.set(Calendar.MINUTE, Minuto);
+
+        // Aggiorno la data di aggiornamento
+        // s=String.format("%02d", cal.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", cal.get(Calendar.MONTH)) + "/" + String.format("%04d", cal.get(Calendar.YEAR));
+        //remoteViews.setTextViewText(R.id.dataAggiornamento, s);
+        remoteViews.setTextViewText(R.id.dataAggiornamento, dataAggiornamento);
+
+        //aggiorno l'ora di uscita
         cal.add(Calendar.HOUR_OF_DAY, oraProfilo);
         cal.add(Calendar.MINUTE, minutoProfilo);
 
@@ -92,17 +102,13 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         remoteViews.setTextViewText(R.id.OraUscitaTXT, s);
 
         // Imposto il buono pasto
-        cal.set(Calendar.HOUR_OF_DAY,Ora);
+        cal.set(Calendar.HOUR_OF_DAY, Ora);
         cal.set(Calendar.MINUTE, Minuto);
         cal.add(Calendar.HOUR_OF_DAY, oraBuonoPasto);
         cal.add(Calendar.MINUTE, minutoBuonoPasto);
 
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
-
-        // Aggiorno la data di aggiornamento
-        s=String.format("%02d", cal.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", cal.get(Calendar.MONTH)) + "/" + String.format("%04d", cal.get(Calendar.YEAR));
-        remoteViews.setTextViewText(R.id.dataAggiornamento, s);
 
         // imposto il click solo se non sono un host widget
         if (!isLockScreen){
@@ -145,7 +151,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
             Minuto = intent.getIntExtra(context.getString(R.string.MINUTO_INGRESSO_WIDGET), 0);
             oraProfilo=intent.getIntExtra(STATO_ORA_PROFILO,7);
             minutoProfilo=intent.getIntExtra(STATO_MINUTO_PROFILO,42);
-
+            dataAggiornamento=intent.getStringExtra(STATO_DATA_AGGIORNAMENTO);
         } else {
             aggiornaWidgetData(context);
         }
@@ -153,13 +159,13 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
 
     // imposto i parametri iniziali se non ho un intent prendendoli dalle shared prefs
     private void aggiornaWidgetData (Context context){
+        Resources res= context.getResources();
         // Restore preferences
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         Ora = settings.getInt(STATO_ORA, 8);
         Minuto = settings.getInt(STATO_MINUTO, 0);
         oraProfilo=settings.getInt(STATO_ORA_PROFILO, 7);
         minutoProfilo=settings.getInt(STATO_MINUTO_PROFILO, 42);
+        dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO,res.getString(R.string.default_hour_min_value));
     }
 }
-
-

@@ -40,7 +40,8 @@
         android:layout_above="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="23dp">
+        android:id="@+id/linearLayout3"
+        android:layout_marginBottom="@dimen/margin_medium">
 
         <TableLayout
             android:layout_width="match_parent"
@@ -244,24 +245,24 @@
         android:singleLine="true" />
 
     <TextView
-        android:layout_width="104dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textOraIngresso"
-        android:layout_alignBaseline="@+id/textView2"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_alignRight="@+id/analogClock"
-        android:layout_alignEnd="@+id/analogClock" />
+        android:text="@string/OraIngressoValueWidgetLBL"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignLeft="@+id/textOraUscita"
+        android:layout_alignStart="@+id/textOraUscita" />
 
     <TextView
-        android:layout_width="103dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textOraUscita"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignLeft="@+id/textOraIngresso"
-        android:layout_alignStart="@+id/textOraIngresso" />
+        android:text="@string/OraIngressoValueWidgetLBL"
+        android:layout_below="@+id/textOraIngresso"
+        android:layout_alignLeft="@+id/dataAggiornamento"
+        android:layout_alignStart="@+id/dataAggiornamento" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -271,5 +272,25 @@
         android:id="@+id/dataAggiornamento"
         android:layout_below="@+id/analogClock"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Buono Pasto"
+        android:id="@+id/textView"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignRight="@+id/linearLayout3"
+        android:layout_alignEnd="@+id/linearLayout3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textBuonoPasto"
+        android:text="@string/OraIngressoValueWidgetLBL"
+        android:layout_alignTop="@+id/textOraUscita"
+        android:layout_toRightOf="@+id/analogClock"
+        android:layout_toEndOf="@+id/analogClock" />
 
 </RelativeLayout>
