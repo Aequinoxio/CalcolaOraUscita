@@ -110,6 +110,14 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
 
+        // aggiorno il weekend mostranto il verde se è sabatop o domenica
+        boolean weekend = ((cal.get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
+        if (weekend) {
+            remoteViews.setInt(R.id.workDayLBL, "setBackgroundResource", R.drawable.roundedrect_green);
+        } else {
+            remoteViews.setInt(R.id.workDayLBL, "setBackgroundResource", R.drawable.roundedrect_red);
+        }
+
         // imposto il click solo se non sono un host widget
         if (!isLockScreen){
             // When we click the widget, we want to open our main activity.
@@ -166,6 +174,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         Minuto = settings.getInt(STATO_MINUTO, 0);
         oraProfilo=settings.getInt(STATO_ORA_PROFILO, 7);
         minutoProfilo=settings.getInt(STATO_MINUTO_PROFILO, 42);
-        dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO,res.getString(R.string.default_hour_min_value));
+        dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO,res.getString(R.string.DefaultDate));
     }
 }

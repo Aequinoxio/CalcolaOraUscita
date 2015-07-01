@@ -99,6 +99,28 @@
                 android:layout_alignRight="@+id/OraBuonoPastoTXT"
                 android:layout_alignEnd="@+id/OraBuonoPastoTXT"
                 android:textColor="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/UltimoAgg"
+                android:id="@+id/textView8"
+                android:textColor="@android:color/white"
+                android:layout_alignBottom="@+id/dataAggiornamento"
+                android:layout_toLeftOf="@+id/dataAggiornamento"
+                android:layout_toStartOf="@+id/dataAggiornamento" />
+
+            <TextView
+                android:layout_width="@dimen/margin_large"
+                android:layout_height="@dimen/margin_large"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/workDayLBL"
+                android:layout_alignTop="@+id/OraIngressoTXT"
+                android:layout_centerHorizontal="true"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:background="@drawable/roundedrect" />
+
         </RelativeLayout>
     </LinearLayout>
 

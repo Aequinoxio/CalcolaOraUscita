@@ -43,4 +43,7 @@
     <string name="square_widget_name">Calcola ora uscita quadrato</string>
     <string name="little_square_widget_name">Calcola ora uscita quadrato piccolo</string>
     <string name="DefaultDate">--/--/----</string>
+    <string name="UltimoAggiornamento">Ultimo aggiornamento:</string>
+    <string name="UltimoAgg">Ultimo agg.:</string>
+    <string name="ProfiloOrarioLBL">Profilo orario</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.utente.calcolaorauscita;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 
 import android.appwidget.AppWidgetManager;
@@ -90,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         // alloco 5 interi per ore e minuti che costituiscono il profilo orario giornaliero
@@ -106,8 +108,8 @@ public class MainActivity extends ActionBarActivity {
         annullaUpdateOraIngresso.setEnabled(false);
         timePicker.setEnabled(true);
 
-        calIn = Calendar.getInstance();
-        calOut = Calendar.getInstance();
+       calIn = Calendar.getInstance();
+       calOut = Calendar.getInstance();
 
         // Ripristino o imposto l'ora di ingresso e calcolo l'ora di uscita
         if (savedInstanceState != null) {
@@ -121,10 +123,10 @@ public class MainActivity extends ActionBarActivity {
 
             try {
                 dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
-//                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-//                calIn.setTime(sdf.parse(dataAggiornamento));
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+                calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
-//                calIn = Calendar.getInstance();
+                calIn = Calendar.getInstance();
             }
 
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
@@ -169,11 +171,11 @@ public class MainActivity extends ActionBarActivity {
             }
 
             try {
-                dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO, getString(R.string.default_hour_min_value));
-//                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-//                calIn.setTime(sdf.parse(dataAggiornamento));
+                dataAggiornamento=settings.getString(STATO_DATA_AGGIORNAMENTO, getString(R.string.DefaultDate));
+                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+                calIn.setTime(sdf.parse(dataAggiornamento));
             }catch(Exception e){
-//                calIn = Calendar.getInstance();
+                calIn = Calendar.getInstance();
             }
 
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
@@ -221,6 +223,7 @@ public class MainActivity extends ActionBarActivity {
         String s;
         TextView testo;
         Resources res = getResources();
+        boolean weekend= false;
 
         // Aggiorno l'ora per il buono pasto
         calOut.setTime(calIn.getTime());
@@ -239,7 +242,7 @@ public class MainActivity extends ActionBarActivity {
 
         switch (giornoSettimana){ // TODO: workaround per ora
             case Calendar.SATURDAY :
-            case Calendar.SUNDAY:
+            case Calendar.SUNDAY: weekend = true;
             case Calendar.MONDAY: textID=R.id.lunLBL; giornoSettimana=0; break;
             case Calendar.TUESDAY:  textID=R.id.marLBL; giornoSettimana=1; break;
             case Calendar.WEDNESDAY: textID=R.id.merLBL; giornoSettimana=2;break;
@@ -251,6 +254,12 @@ public class MainActivity extends ActionBarActivity {
 //        if (giornoSettimana0) {
 //            giornoSettimana=0;
 //        }
+
+        testo = (TextView) findViewById(R.id.workDayLBL);
+        if (weekend)
+            testo.setBackgroundResource(R.drawable.roundedrect_green);
+        else
+            testo.setBackgroundResource(R.drawable.roundedrect_red);
 
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];
@@ -300,7 +309,8 @@ public class MainActivity extends ActionBarActivity {
 
         // Aggiorno la data di aggiornamento
         testo = (TextView) findViewById(R.id.dataAggiornamento);
-        dataAggiornamento=String.format("%02d", calIn.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calIn.get(Calendar.MONTH)) + "/" + String.format("%04d", calIn.get(Calendar.YEAR));
+        // N.B. occorre aggiungere 1 ai mesi perchè il loro intervallo è 0-11 e non 1-12
+        dataAggiornamento=String.format("%02d", calIn.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calIn.get(Calendar.MONTH)+1) + "/" + String.format("%04d", calIn.get(Calendar.YEAR));
         testo.setText(dataAggiornamento);
 
         // Imposto i pulsanti
@@ -438,6 +448,9 @@ public class MainActivity extends ActionBarActivity {
         dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
 
 /*
+    N.B. la classe SimpleDateFormat imposta i mesi nell'intervallo 0-11 anzichè 1-12
+         fare attenzione al mese che va indietro di uno
+    */
         SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
 
         try {
@@ -445,11 +458,10 @@ public class MainActivity extends ActionBarActivity {
         }catch(Exception e) {
             calIn = Calendar.getInstance();
         }
-*/
 
         calIn.set(Calendar.HOUR_OF_DAY, Ora);
         calIn.set(Calendar.MINUTE, Minuto);
-
+/**/
         aggiornaValori();
     }
 
