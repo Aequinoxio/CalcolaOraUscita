@@ -260,11 +260,11 @@ public class MainActivity extends ActionBarActivity {
         weekend = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
         if (weekend) {
             //testo.setBackgroundResource(R.drawable.roundedrect_green);
-            pb.setBackgroundResource(R.drawable.roundedrect_green);
-            pb.setProgress(0);
+            //pb.setBackgroundResource(R.drawable.roundedrect_green);
+            pb.setProgress(5);
         } else {
             //testo.setBackgroundResource(R.drawable.roundedrect_red);
-            pb.setBackgroundResource(R.drawable.roundedrect_red);
+            //pb.setBackgroundResource(R.drawable.roundedrect_red);
             pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
         }
 

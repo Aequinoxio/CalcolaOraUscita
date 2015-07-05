@@ -323,9 +323,8 @@
         android:layout_height="@dimen/margin_medium"
         android:id="@+id/progressBar"
         android:indeterminate="false"
-        android:background="@drawable/roundedrect"
-        android:backgroundTint="@android:color/holo_red_light"
         android:layout_below="@+id/linearLayout8"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:progressDrawable="@drawable/greenprogress" />
 
 </RelativeLayout>

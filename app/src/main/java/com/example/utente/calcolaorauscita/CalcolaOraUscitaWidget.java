@@ -14,8 +14,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.view.*;
@@ -112,10 +114,25 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
 
         // aggiorno il weekend mostrando il verde se è sabato o domenica
         boolean weekend = ((cal.get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
+
+        /* TODO: nell'orientamento portrait mostrare il cerchio verde su sfondo grigio nei giorni feriali e
+                il quadrato verde nei festivi
+                nell'orientamento landscape lasciare la visualizzazione a barra
+        */
         if (weekend) {
-            remoteViews.setInt(R.id.workDayLBL, "setBackgroundResource", R.drawable.roundedrect_green);
+            //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_green);
+            if (context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
+                //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", 0 );
+                remoteViews.setProgressBar(R.id.progressBar, 5, 5, false);
+            } else {
+                //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_green);
+                remoteViews.setProgressBar(R.id.progressBar, 5, 5, false);
+            }
+
+
         } else {
-            remoteViews.setInt(R.id.workDayLBL, "setBackgroundResource", R.drawable.roundedrect_red);
+            // remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_red);
+            remoteViews.setProgressBar(R.id.progressBar, 5, Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1,false);
         }
 
         // imposto il click solo se non sono un host widget
