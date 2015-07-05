@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import android.widget.Button;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.content.*;
@@ -236,11 +237,12 @@ public class MainActivity extends ActionBarActivity {
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
         calOut.setTime(calIn.getTime());
 
-        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+
 
         int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
 
-        switch (giornoSettimana){ // TODO: workaround per ora
+        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+        switch (giornoSettimana){ // TODO: workaround per ora. Ridefinire in modo da usare tutti i giorni della settimana
             case Calendar.SATURDAY :
             case Calendar.SUNDAY: weekend = true;
             case Calendar.MONDAY: textID=R.id.lunLBL; giornoSettimana=0; break;
@@ -250,16 +252,21 @@ public class MainActivity extends ActionBarActivity {
             case Calendar.FRIDAY:   textID=R.id.venLBL; giornoSettimana=4;break;
         }
 
-//        // TODO: Workaround... se il giorno della settimana è negativo allora sono in sabato o domenica -> resetto a lunedì
-//        if (giornoSettimana0) {
-//            giornoSettimana=0;
-//        }
-
-        testo = (TextView) findViewById(R.id.workDayLBL);
-        if (weekend)
-            testo.setBackgroundResource(R.drawable.roundedrect_green);
-        else
-            testo.setBackgroundResource(R.drawable.roundedrect_red);
+        // imposto il colore del giorno attuale in base al fatto che sia o meno il weekend
+        // imposto la progress bar della settimana e la azzero se sono nel weekend
+        ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+        pb.setMax(5);
+        //testo = (TextView) findViewById(R.id.workDayLBL);
+        weekend = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
+        if (weekend) {
+            //testo.setBackgroundResource(R.drawable.roundedrect_green);
+            pb.setBackgroundResource(R.drawable.roundedrect_green);
+            pb.setProgress(0);
+        } else {
+            //testo.setBackgroundResource(R.drawable.roundedrect_red);
+            pb.setBackgroundResource(R.drawable.roundedrect_red);
+            pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
+        }
 
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];

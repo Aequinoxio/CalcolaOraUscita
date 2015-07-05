@@ -110,7 +110,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
 
-        // aggiorno il weekend mostranto il verde se è sabatop o domenica
+        // aggiorno il weekend mostrando il verde se è sabato o domenica
         boolean weekend = ((cal.get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
         if (weekend) {
             remoteViews.setInt(R.id.workDayLBL, "setBackgroundResource", R.drawable.roundedrect_green);
