@@ -265,7 +265,8 @@ public class MainActivity extends ActionBarActivity {
         } else {
             //testo.setBackgroundResource(R.drawable.roundedrect_red);
             //pb.setBackgroundResource(R.drawable.roundedrect_red);
-            pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
+            pb.setSecondaryProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
+            pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-2);
         }
 
         profiloOra=profiloOraGiorno[giornoSettimana];

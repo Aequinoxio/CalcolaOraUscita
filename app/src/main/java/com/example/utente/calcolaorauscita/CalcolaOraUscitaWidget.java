@@ -128,11 +128,9 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
                 //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_green);
                 remoteViews.setProgressBar(R.id.progressBar, 5, 5, false);
             }
-
-
         } else {
             // remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_red);
-            remoteViews.setProgressBar(R.id.progressBar, 5, Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1,false);
+            remoteViews.setProgressBar(R.id.progressBar, 5, Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2,false);
         }
 
         // imposto il click solo se non sono un host widget
