@@ -46,4 +46,9 @@
     <string name="UltimoAggiornamento">Ultimo aggiornamento:</string>
     <string name="UltimoAgg">Ultimo agg.:</string>
     <string name="ProfiloOrarioLBL">Profilo orario</string>
+
+    <string name="AlarmExitTitle">Calcola ora uscita</string>
+    <string name="AlarmExitText">E\' ora di uscire</string>
+    <string name="AlarmExitTicker">E\' ora di uscire</string>
+
 </resources>

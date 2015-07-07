@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.*;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -46,6 +47,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     ////////////////////////////////////////////////////////////////////////
+
+    final static int RQS_1 = 1; // per lanciare l'allarme
 
     // Variabili per ripristinare i valori usando la shared prefs
     public static final String PREFS_NAME = "CalcolaOraUscita";
@@ -193,6 +196,11 @@ public class MainActivity extends ActionBarActivity {
                     Minuto=calIn.get(Calendar.MINUTE);
 
                     aggiornaValori();
+                    /* DEBUG
+                    Calendar c=Calendar.getInstance();
+                    setAlarm(c);
+                    */
+                    setAlarm(calOut);
                 }
             }
         );
@@ -220,6 +228,17 @@ public class MainActivity extends ActionBarActivity {
         );
     }
 
+    private void setAlarm(Calendar targetCal){
+
+        Log.v("","\n\n***\n"
+                + "Alarm is set@ " + targetCal.getTime() + "\n"
+                + "***\n");
+
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), RQS_1, intent, 0);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+    }
     protected void aggiornaValori(){
         String s;
         TextView testo;
@@ -236,8 +255,6 @@ public class MainActivity extends ActionBarActivity {
 
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
         calOut.setTime(calIn.getTime());
-
-
 
         int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
 

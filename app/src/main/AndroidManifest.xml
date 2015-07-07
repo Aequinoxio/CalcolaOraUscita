@@ -48,6 +48,8 @@
                 android:resource="@xml/calcola_ora_uscita_widget_info_1x1" />
         </receiver>
 
+        <receiver android:name=".AlarmReceiver" android:process=":remote" />
+
     </application>
 
 </manifest>
