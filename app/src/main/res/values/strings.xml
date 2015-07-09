@@ -47,8 +47,16 @@
     <string name="UltimoAgg">Ultimo agg.:</string>
     <string name="ProfiloOrarioLBL">Profilo orario</string>
 
-    <string name="AlarmExitTitle">Calcola ora uscita</string>
-    <string name="AlarmExitText">E\' ora di uscire</string>
-    <string name="AlarmExitTicker">E\' ora di uscire</string>
+    <string name="NotificationAlarmExitTitle">Calcola ora uscita</string>
+    <string name="NotificationAlarmExitText">Ok, basta. E\' ora di uscire</string>
+    <string name="NotificationAlarmExitTicker">E\' ora di uscire</string>
+    <string name="NotificationStartText">Ora di uscita</string>
+    <string name="NotificationStartTicker1">Ho calcolato la tua ora di uscita.\nDevi uscire alle</string>
+    <string name="NotificationStartTicker2">Prenderai il buono pasto alle</string>
+
+    <string name="setAlarmToastInfo">Impostato allarme alle ore</string>
+    <string name="btnRingTone">Ringtone</string>
+    <string name="alarmIntentRingToneUri">KEY_TONE_URI</string>
+    <string name="btnNotification">Notifica</string>
 
 </resources>

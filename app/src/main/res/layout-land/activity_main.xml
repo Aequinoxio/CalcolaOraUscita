@@ -346,4 +346,16 @@
         android:layout_below="@+id/linearLayout6"
         android:progressDrawable="@drawable/greenprogress" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnRingTone"
+        android:id="@+id/button2"
+        android:enabled="true"
+        android:singleLine="true"
+        android:onClick="showRingTonePicker"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

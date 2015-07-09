@@ -3,12 +3,12 @@ package com.example.utente.calcolaorauscita;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 
-import android.appwidget.AppWidgetManager;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import android.content.*;
 import android.app.*;
 import android.text.format.*;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -48,7 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
     ////////////////////////////////////////////////////////////////////////
 
-    final static int RQS_1 = 1; // per lanciare l'allarme
+   // final static int RQS_1 = 1; // per lanciare l'allarme
+   // final static int RQS_RINGTONEPICKER = 1 ; //per scegliere il ringtone
 
     // Variabili per ripristinare i valori usando la shared prefs
     public static final String PREFS_NAME = "CalcolaOraUscita";
@@ -60,6 +62,9 @@ public class MainActivity extends ActionBarActivity {
 
     protected Calendar calIn;
     protected Calendar calOut;
+    protected Calendar calBP;
+    // Ringtone
+    private Uri uriRingTone;
 
     // Profilo orario giornaliero diverso per ciascun giorno della settimana
     private int[] profiloOraGiorno;
@@ -112,8 +117,13 @@ public class MainActivity extends ActionBarActivity {
         annullaUpdateOraIngresso.setEnabled(false);
         timePicker.setEnabled(true);
 
-       calIn = Calendar.getInstance();
-       calOut = Calendar.getInstance();
+        // Imposto le variabili core
+        calIn = Calendar.getInstance();
+        calOut = Calendar.getInstance();
+        calBP=Calendar.getInstance();
+
+        //
+        uriRingTone=Uri.parse("");
 
         // Ripristino o imposto l'ora di ingresso e calcolo l'ora di uscita
         if (savedInstanceState != null) {
@@ -196,11 +206,9 @@ public class MainActivity extends ActionBarActivity {
                     Minuto=calIn.get(Calendar.MINUTE);
 
                     aggiornaValori();
-                    /* DEBUG
-                    Calendar c=Calendar.getInstance();
-                    setAlarm(c);
-                    */
+
                     setAlarm(calOut);
+
                 }
             }
         );
@@ -228,16 +236,69 @@ public class MainActivity extends ActionBarActivity {
         );
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == R.integer.RingTonePickerRequestCode && resultCode == RESULT_OK){
+            uriRingTone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        }
+    }
     private void setAlarm(Calendar targetCal){
 
         Log.v("","\n\n***\n"
-                + "Alarm is set@ " + targetCal.getTime() + "\n"
+                + this.getString(R.string.setAlarmToastInfo) +" "+ targetCal.getTime() + "\n"
                 + "***\n");
 
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), RQS_1, intent, 0);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra(getString(R.string.alarmIntentRingToneUri), uriRingTone);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getBaseContext(),
+                R.integer.AlarmRequestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+
+        // Visualizzo un messaggio come feedback
+        Toast myToast = Toast.makeText(MainActivity.this,
+                this.getString(R.string.setAlarmToastInfo)+"\n"
+                        + android.text.format.DateFormat.format(
+                        "HH:mm:ss - dd/MM/yy",
+                        targetCal.getTimeInMillis()),
+                Toast.LENGTH_LONG);
+        myToast.show();
+        setNotification();
+    }
+    private void setNotification(){
+        Notification myNotification;
+        NotificationManager notificationManager;
+        Context context= getBaseContext();
+
+        myNotification = new NotificationCompat.Builder(context)
+                .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle))
+                .setContentText(context.getString(R.string.NotificationStartText)+" :"+
+                        String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calOut.get(Calendar.MINUTE))+ "\n"+
+                                context.getString(R.string.NotificationStartTicker2)+ " "+
+                                String.format("%02d",calBP.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calBP.get(Calendar.MINUTE))
+                )
+                .setTicker(context.getString(R.string.NotificationStartTicker1)+ " "+
+                        String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n"+
+                        context.getString(R.string.NotificationStartTicker2)+ " "+
+                        String.format("%02d",calBP.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calBP.get(Calendar.MINUTE))
+                )
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS)
+                .setAutoCancel(false)
+                .setSmallIcon(R.drawable.ic_launch_white_18dp)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setShowWhen(true)
+               // .setProgress(100,0,false)
+                .setUsesChronometer(false)
+                .build();
+
+        notificationManager =
+                (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
     }
     protected void aggiornaValori(){
         String s;
@@ -246,11 +307,11 @@ public class MainActivity extends ActionBarActivity {
         boolean weekend= false;
 
         // Aggiorno l'ora per il buono pasto
-        calOut.setTime(calIn.getTime());
-        calOut.add(Calendar.HOUR_OF_DAY, oraBuonoPasto);
-        calOut.add(Calendar.MINUTE, minutoBuonoPasto);
+        calBP.setTime(calIn.getTime());
+        calBP.add(Calendar.HOUR_OF_DAY, oraBuonoPasto);
+        calBP.add(Calendar.MINUTE, minutoBuonoPasto);
         testo = (TextView) findViewById(R.id.textBuonoPasto);
-        s=String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",calOut.get(Calendar.MINUTE));
+        s=String.format("%02d",calBP.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",calBP.get(Calendar.MINUTE));
         testo.setText(s);
 
         // Aggiorno l'ora di uscita con il profilo orario del giorno attuale
@@ -288,9 +349,15 @@ public class MainActivity extends ActionBarActivity {
 
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];
-        calOut.add(Calendar.HOUR, profiloOra);
-        calOut.add(Calendar.MINUTE, profiloMinuto);
 
+        // In debug mode imposto il timer di uscita ad un minuto
+        if (BuildConfig.DEBUG) {
+            calOut= calIn.getInstance();
+            calOut.add(Calendar.MINUTE, 1);
+        } else {
+            calOut.add(Calendar.HOUR, profiloOra);
+            calOut.add(Calendar.MINUTE, profiloMinuto);
+        }
         testo = (TextView) findViewById(R.id.textOraIngresso);
         s=String.format("%02d",calIn.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",calIn.get(Calendar.MINUTE));
         testo.setText(s);
@@ -503,7 +570,7 @@ public class MainActivity extends ActionBarActivity {
 
         outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
         outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
-        outState.putString(STATO_DATA_AGGIORNAMENTO,dataAggiornamento);
+        outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
     }
 
     public void showTimePickerDialog(View v) {
@@ -521,6 +588,8 @@ public class MainActivity extends ActionBarActivity {
                 Ora= selectedHour;
                 Minuto = selectedMinute;
                 aggiornaValori();
+
+                setAlarm(calOut);
             }
         }, Ora, Minuto, true);//Yes 24 hour time
 
@@ -528,6 +597,13 @@ public class MainActivity extends ActionBarActivity {
         mTimePicker.show();
     }
 
+    public void showRingTonePicker(View v){
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        startActivityForResult(intent, R.integer.RingTonePickerRequestCode);
+    }
+    public void showNotification(View v) {
+        setNotification();
+    }
     public void showTimePickerDialogProfilo(View v) {
         TimePickerDialog mTimePicker;
 

@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,37 +19,44 @@ import android.widget.Toast;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private static final int MY_NOTIFICATION_ID=1;
     NotificationManager notificationManager;
     Notification myNotification;
-    private final String myBlog = "http://android-er.blogspot.com/";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, context.getString(R.string.AlarmExitTitle), Toast.LENGTH_LONG).show();
 
-        /* No action
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(myBlog));
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                myIntent,
-                Intent.FLAG_ACTIVITY_NEW_TASK);
-*/
+        // Messagio a schermo
+        Toast.makeText(context, context.getString(R.string.NotificationAlarmExitTitle), Toast.LENGTH_LONG).show();
+
+        String s=intent.getStringExtra(context.getString(R.string.alarmIntentRingToneUri));
+        Uri uriRingTone;
+        try{
+            uriRingTone=Uri.parse(s);
+        } catch (Exception e){
+         // Impostare un ringtone di default
+         // uriRingTone="";
+        }
+
+
         myNotification = new NotificationCompat.Builder(context)
-                .setContentTitle(context.getString(R.string.AlarmExitTitle))
-                .setContentText(context.getString(R.string.AlarmExitText))
-                .setTicker(context.getString(R.string.AlarmExitTicker))
+                .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle))
+                .setContentText(context.getString(R.string.NotificationAlarmExitText))
+                .setTicker(context.getString(R.string.NotificationAlarmExitTicker))
                 .setWhen(System.currentTimeMillis())
-// no action                .setContentIntent(pendingIntent)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.FLAG_SHOW_LIGHTS)
+                .setAutoCancel(false)
+//                .setLights(Color.BLUE,500,500)
                 .setSmallIcon(R.drawable.ic_launch_white_18dp)
-                        .build();
+                .build();
+
+        myNotification.ledARGB=0xff0000ff;;
+        myNotification.ledOnMS=500;
+        myNotification.ledOffMS=500;
 
         notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
+        notificationManager.notify(R.integer.MY_NOTIFICATION_ID,myNotification);
 
         Log.v("", "\n\n***\n"
                 + "Alarm is raised \n"
