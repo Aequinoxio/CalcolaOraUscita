@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="MY_NOTIFICATION_ID">1232</integer>
+    <integer name="AlarmRequestCode">2232</integer>
+    <integer name="RingTonePickerRequestCode">3232</integer>
+    <integer name="intentMainActivity">1029</integer>
+<integer-array name="NotificationVibrationPattern">
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+    <item>500</item>
+</integer-array>
+</resources>

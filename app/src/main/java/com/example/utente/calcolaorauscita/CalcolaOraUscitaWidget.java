@@ -88,6 +88,9 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         cal.set(Calendar.HOUR_OF_DAY,Ora);
         cal.set(Calendar.MINUTE, Minuto);
 
+        // valuto se è il weekend per mostrare il verde se è sabato o domenica
+        boolean weekend = ((cal.get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
+
         // Aggiorno la data di aggiornamento
         // s=String.format("%02d", cal.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", cal.get(Calendar.MONTH)) + "/" + String.format("%04d", cal.get(Calendar.YEAR));
         //remoteViews.setTextViewText(R.id.dataAggiornamento, s);
@@ -96,6 +99,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         //aggiorno l'ora di uscita
         cal.add(Calendar.HOUR_OF_DAY, oraProfilo);
         cal.add(Calendar.MINUTE, minutoProfilo);
+
 
         s=String.format("%02d",Ora)+ ":"+String.format("%02d",Minuto);
         remoteViews.setTextViewText(R.id.OraIngressoTXT, s);
@@ -112,8 +116,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         s=String.format("%02d",cal.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d",cal.get(Calendar.MINUTE));
         remoteViews.setTextViewText(R.id.OraBuonoPastoTXT, s);
 
-        // aggiorno il weekend mostrando il verde se è sabato o domenica
-        boolean weekend = ((cal.get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
 
         /* TODO: nell'orientamento portrait mostrare il cerchio verde su sfondo grigio nei giorni feriali e
                 il quadrato verde nei festivi
@@ -128,16 +130,22 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
                 //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_green);
                 remoteViews.setProgressBar(R.id.progressBar, 5, 5, false);
             }
+            remoteViews.setInt(R.id.laySfondo, "setBackgroundResource", R.drawable.roundedrect_green);
         } else {
             // remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_red);
             remoteViews.setProgressBar(R.id.progressBar, 5, Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2,false);
+            remoteViews.setInt(R.id.laySfondo, "setBackgroundResource", R.drawable.roundedrect);
         }
 
         // imposto il click solo se non sono un host widget
         if (!isLockScreen){
             // When we click the widget, we want to open our main activity.
             Intent launchActivity = new Intent(context,MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context,0 , launchActivity, 0 );
+
+            // Imposto i flag per evitare di aprire nuovamente l'attività: mi serve di riaprirnw solo una
+            launchActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context,0 da specificare , launchActivity, 0 da specificare anche in altri metodi ed altre classi);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,R.integer.intentMainActivity, launchActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
             remoteViews.setOnClickPendingIntent(R.id.calcola_ora_uscitaWDG, pendingIntent);
         }

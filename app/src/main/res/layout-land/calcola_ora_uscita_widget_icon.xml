@@ -16,7 +16,8 @@
             android:padding="@dimen/abc_action_bar_subtitle_bottom_margin_material"
             android:background="@drawable/roundedrect"
             android:backgroundTint="@android:color/background_dark"
-            android:clickable="false">
+            android:clickable="false"
+            android:id="@+id/laySfondo">
 
             <LinearLayout
                 android:orientation="horizontal"

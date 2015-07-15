@@ -332,7 +332,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btnRingTone"
-        android:id="@+id/button"
+        android:id="@+id/btnRingTone"
         android:enabled="true"
         android:singleLine="true"
         android:onClick="showRingTonePicker"
@@ -345,9 +345,18 @@
         android:layout_height="wrap_content"
         android:text="@string/btnNotification"
         android:id="@+id/btnNotifica"
-        android:layout_alignBottom="@+id/button"
+        style="?android:attr/buttonStyleSmall"
+        android:onClick="showNotification"
+        android:layout_above="@+id/textView10"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        style="?android:attr/buttonStyleSmall" />
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/lblMainActivityIstanze"
+        android:layout_below="@+id/progressBar"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -15,7 +15,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/roundedrect"
             android:backgroundTint="@android:color/background_dark"
-            android:clickable="false">
+            android:clickable="false"
+            android:id="@+id/laySfondo">
 
             <TextView
                 android:id="@+id/OraUscitaTXT"

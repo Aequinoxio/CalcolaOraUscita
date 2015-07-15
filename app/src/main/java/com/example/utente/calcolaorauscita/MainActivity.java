@@ -1,11 +1,13 @@
 package com.example.utente.calcolaorauscita;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import android.app.AlertDialog;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -52,6 +54,12 @@ public class MainActivity extends ActionBarActivity {
    // final static int RQS_1 = 1; // per lanciare l'allarme
    // final static int RQS_RINGTONEPICKER = 1 ; //per scegliere il ringtone
 
+    // DEBUG per le istanze multiple della main activity
+    private static int istanzeMainActivity=0;
+
+    // Workaround per evitare che anche con l'annulla il metodo onTimeSet imposti il valore dell'ora
+    private  boolean timePickerChoseTime=false;
+
     // Variabili per ripristinare i valori usando la shared prefs
     public static final String PREFS_NAME = "CalcolaOraUscita";
 
@@ -83,6 +91,17 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
     private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
+    // N.B. startActivityForRequest accetta solo valori a 16 bit (!!!)
+    private static final int RingTonePickerRequestCode = R.integer.RingTonePickerRequestCode & 0xffff;
+
+    // Tengo traccia se ho impostato l'allarme
+    static boolean allarmeImpostato;
+
+    // Variabili per impostare le notifiche
+    Notification myNotification=null;
+    NotificationCompat.Builder myNotificationBuilder=null;
+    NotificationManager notificationManager=null;
+
     // Variabili per memorizzare data e ora. Usate per memorizzare lo stato e per
     // ripristinare i valori corretti dopo lo stop dell'Activity
     private int Ora,Minuto;
@@ -100,8 +119,25 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        // imposto
+        allarmeImpostato=false;
+
+        // DEBUG
+        istanzeMainActivity++;
+        TextView t = (TextView) findViewById(R.id.lblMainActivityIstanze);
+        t.setText(String.format("%d",istanzeMainActivity));
+
+        // In debug mode accendo quello che mi serve per il debug
+        if (BuildConfig.DEBUG){
+            Button b = (Button) findViewById(R.id.btnRingTone);
+            b.setVisibility(View.GONE);
+
+        } else {
+            Button b = (Button) findViewById(R.id.btnRingTone);
+            b.setVisibility(View.GONE);
+        }
 
         // alloco 5 interi per ore e minuti che costituiscono il profilo orario giornaliero
         profiloOraGiorno = new int[5];
@@ -238,14 +274,18 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == R.integer.RingTonePickerRequestCode && resultCode == RESULT_OK){
-            uriRingTone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-        }
+        if(requestCode == RingTonePickerRequestCode)
+            if (resultCode == RESULT_OK)
+                uriRingTone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            else
+                uriRingTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
     }
     private void setAlarm(Calendar targetCal){
 
-        Log.v("","\n\n***\n"
-                + this.getString(R.string.setAlarmToastInfo) +" "+ targetCal.getTime() + "\n"
+        Log.v("", "\n\n***\n"
+                + this.getString(R.string.setAlarmToastInfo) + " " + targetCal.getTime() + "\n"
                 + "***\n");
 
         Intent intent = new Intent(this, AlarmReceiver.class);
@@ -263,39 +303,88 @@ public class MainActivity extends ActionBarActivity {
         Toast myToast = Toast.makeText(MainActivity.this,
                 this.getString(R.string.setAlarmToastInfo)+"\n"
                         + android.text.format.DateFormat.format(
-                        "HH:mm:ss - dd/MM/yy",
-                        targetCal.getTimeInMillis()),
+                            "HH:mm:ss - dd/MM/yy",
+                            targetCal.getTimeInMillis()
+                          ),
                 Toast.LENGTH_LONG);
         myToast.show();
+
+        allarmeImpostato=true;
+
         setNotification();
     }
     private void setNotification(){
-        Notification myNotification;
-        NotificationManager notificationManager;
         Context context= getBaseContext();
+        // TODO: Impostare il pattern nelle risorse
+        // int[] intPatternTemp =this.getResources().getIntArray(R.array.NotificationVibrationPattern);
+        // List<long> a = Arrays.asList(intPatternTemp )
 
-        myNotification = new NotificationCompat.Builder(context)
-                .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle))
-                .setContentText(context.getString(R.string.NotificationStartText)+" :"+
-                        String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calOut.get(Calendar.MINUTE))+ "\n"+
-                                context.getString(R.string.NotificationStartTicker2)+ " "+
-                                String.format("%02d",calBP.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calBP.get(Calendar.MINUTE))
-                )
-                .setTicker(context.getString(R.string.NotificationStartTicker1)+ " "+
-                        String.format("%02d",calOut.get(Calendar.HOUR_OF_DAY))+ ":"+String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n"+
-                        context.getString(R.string.NotificationStartTicker2)+ " "+
-                        String.format("%02d",calBP.get(Calendar.HOUR_OF_DAY))+ ": "+String.format("%02d", calBP.get(Calendar.MINUTE))
-                )
-                .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS)
-                .setAutoCancel(false)
-                .setSmallIcon(R.drawable.ic_launch_white_18dp)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setShowWhen(true)
-               // .setProgress(100,0,false)
-                .setUsesChronometer(false)
-                .build();
+        long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
 
+        // Lancio la main activity se clicco sulla notifica
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent notifyPIntent = PendingIntent.getActivity(context, R.integer.intentMainActivity,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /* // Funziona per chiudere la notifica al click senza mostrare nulla
+        PendingIntent notifyPIntent =
+                PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
+        */
+
+        // check per vedere se l'allarme è impostato
+        // TODO: Non funziona, una volta impostato l'allarme torna sempr eil pending intent
+        PendingIntent p = PendingIntent.getBroadcast(getBaseContext(),R.integer.AlarmRequestCode,
+                new Intent(this, AlarmReceiver.class),
+                PendingIntent.FLAG_NO_CREATE) ;
+
+        allarmeImpostato= (p != null);
+
+        if (p!= null){
+            Log.d("myTag", "Alarm is already active");
+        }
+
+        /////////////////
+        if (myNotificationBuilder==null)
+            myNotificationBuilder=new NotificationCompat.Builder(context);
+
+        myNotification = myNotificationBuilder
+            .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle)
+                            + ((allarmeImpostato) ? " (" + context.getString(R.string.NotificationStartTextAlarmSet) + ")" : "")
+            )
+            .setContentText(context.getString(R.string.NotificationStartText) + ": " +
+                            String.format("%02d", calOut.get(Calendar.HOUR_OF_DAY)) + ": " + String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n" +
+                            context.getString(R.string.NotificationStartTicker2) + " " +
+                            String.format("%02d", calBP.get(Calendar.HOUR_OF_DAY)) + ": " + String.format("%02d", calBP.get(Calendar.MINUTE))
+            )
+            .setTicker(context.getString(R.string.NotificationStartTicker1) + " " +
+                            String.format("%02d", calOut.get(Calendar.HOUR_OF_DAY)) + ":" + String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n" +
+                            context.getString(R.string.NotificationStartTicker2) + " " +
+                            String.format("%02d", calBP.get(Calendar.HOUR_OF_DAY)) + ": " + String.format("%02d", calBP.get(Calendar.MINUTE))
+            )
+            .setWhen(System.currentTimeMillis())
+          //  .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.FLAG_SHOW_LIGHTS)
+            .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS)
+            .setLights(Color.GREEN, 500, 500)
+            .setSmallIcon(R.drawable.ic_launch_white_18dp)
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setVibrate(pattern)
+            .setShowWhen(true)
+            .setAutoCancel(true)
+            .setOnlyAlertOnce(false)
+            .setOngoing(true)           // Mantengo la notifica
+            // .setProgress(100,0,false)
+            .setUsesChronometer(false)
+            .setContentIntent(notifyPIntent)    // Main activity come activity richiamata al click
+            .build();
+
+
+        /*
+        myNotification.ledARGB=0xFF0000FF;
+        myNotification.ledOnMS=500;
+        myNotification.ledOffMS=500;
+*/
         notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
@@ -350,10 +439,10 @@ public class MainActivity extends ActionBarActivity {
         profiloOra=profiloOraGiorno[giornoSettimana];
         profiloMinuto=profiloMinutoGiorno[giornoSettimana];
 
-        // In debug mode imposto il timer di uscita ad un minuto
+        // In debug mode imposto il timer di uscita ad un tempo brevissimo
         if (BuildConfig.DEBUG) {
             calOut= calIn.getInstance();
-            calOut.add(Calendar.MINUTE, 1);
+            calOut.add(Calendar.SECOND, 30);
         } else {
             calOut.add(Calendar.HOUR, profiloOra);
             calOut.add(Calendar.MINUTE, profiloMinuto);
@@ -518,7 +607,7 @@ public class MainActivity extends ActionBarActivity {
         editor.putString(STATO_PROFILO_MINUTO_ARRAY, str.toString());
 
         editor.putInt(STATO_ORA_PROFILO, profiloOra);
-        editor.putInt(STATO_MINUTO_PROFILO,profiloMinuto);
+        editor.putInt(STATO_MINUTO_PROFILO, profiloMinuto);
 
         editor.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
 
@@ -553,7 +642,7 @@ public class MainActivity extends ActionBarActivity {
 
         calIn.set(Calendar.HOUR_OF_DAY, Ora);
         calIn.set(Calendar.MINUTE, Minuto);
-/**/
+
         aggiornaValori();
     }
 
@@ -576,30 +665,61 @@ public class MainActivity extends ActionBarActivity {
     public void showTimePickerDialog(View v) {
         TimePickerDialog mTimePicker;
 
+
         mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
-                calIn.set(Calendar.HOUR_OF_DAY,selectedHour);
-                calIn.set(Calendar.MINUTE,selectedMinute);
-                calOut.set(Calendar.HOUR_OF_DAY, selectedHour);
-                calOut.set(Calendar.MINUTE, selectedMinute);
+                if (timePickerChoseTime) {
+                    calIn.set(Calendar.HOUR_OF_DAY, selectedHour);
+                    calIn.set(Calendar.MINUTE, selectedMinute);
+                    calOut.set(Calendar.HOUR_OF_DAY, selectedHour);
+                    calOut.set(Calendar.MINUTE, selectedMinute);
 
-                Ora= selectedHour;
-                Minuto = selectedMinute;
-                aggiornaValori();
+                    Ora = selectedHour;
+                    Minuto = selectedMinute;
+                    aggiornaValori();
 
-                setAlarm(calOut);
+                    setAlarm(calOut);
+                }
             }
         }, Ora, Minuto, true);//Yes 24 hour time
 
+        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,"Annulla",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_NEGATIVE) {
+                    timePickerChoseTime=false;
+                    Log.v("","Annullato il timepicker");
+                }
+            }
+        });
+
+        mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE,"Ok",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    timePickerChoseTime=true;
+                    Log.v("","Impostato il timepicker");
+                }
+            }
+        });
+
+        mTimePicker.setOnDismissListener(new Dialog.OnDismissListener() {
+            public void onDismiss(DialogInterface dialog) {
+                timePickerChoseTime=false;
+                // Non faccio nulla
+            }
+        });
+
         mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
+
         mTimePicker.show();
     }
 
     public void showRingTonePicker(View v){
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        startActivityForResult(intent, R.integer.RingTonePickerRequestCode);
+
+        // Il metodo accetta solo valori a 16 bit (!!!)
+        startActivityForResult(intent, RingTonePickerRequestCode);
     }
     public void showNotification(View v) {
         setNotification();
@@ -630,6 +750,8 @@ public class MainActivity extends ActionBarActivity {
         mTimePicker.show();
     }
 
+    public static void setAllarme(){allarmeImpostato=true;}
+    public static void resetAllarme(){allarmeImpostato=false;}
     private void aggiornaProfili(){
         // Aggiorno i valori e la label
         profiloOraGiorno[giornoSettimanaProfiloClick]=profiloOra;
@@ -637,7 +759,5 @@ public class MainActivity extends ActionBarActivity {
 
         TextView testo = (TextView) findViewById(profiloLBLClicked);
         testo.setText(String.format("%02d", profiloOra) + ":" + String.format("%02d", profiloMinuto));
-
-
     }
 }

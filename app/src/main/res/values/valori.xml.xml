@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="MY_NOTIFICATION_ID">1232</integer>
-    <integer name="AlarmRequestCode">2232</integer>
-    <integer name="RingTonePickerRequestCode">3232</integer>
-
-</resources>
