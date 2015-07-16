@@ -67,7 +67,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 */
         // Se clicco sulla notifica la faccio solo sparire
         PendingIntent notifyPIntent =
-                PendingIntent.getActivity(context.getApplicationContext(), R.integer.intentMainActivity, new Intent(), PendingIntent.FLAG_NO_CREATE);
+                PendingIntent.getActivity(context.getApplicationContext(), R.integer.intentMainActivity, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
 
 
         myNotification = new NotificationCompat.Builder(context)
