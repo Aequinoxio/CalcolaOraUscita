@@ -63,4 +63,7 @@
     <string name="alarmIntentRingToneUri">KEY_TONE_URI</string>
     <string name="btnNotification">Notifica</string>
 
+    <string name="timePickerCancel">Annulla</string>
+    <string name="timePickerAccept">Ok</string>
+
 </resources>

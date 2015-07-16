@@ -91,6 +91,8 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
     private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
+    protected static final String STATO_ALLARME= "STATO_ALLARME";
+
     // N.B. startActivityForRequest accetta solo valori a 16 bit (!!!)
     private static final int RingTonePickerRequestCode = R.integer.RingTonePickerRequestCode & 0xffff;
 
@@ -204,6 +206,8 @@ public class MainActivity extends ActionBarActivity {
             Ora = settings.getInt(STATO_ORA, 8);
             Minuto = settings.getInt(STATO_MINUTO,0);
 
+            allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
+
             // Recupero il profilo orario
             // ora
             String savedString;
@@ -309,6 +313,7 @@ public class MainActivity extends ActionBarActivity {
                 Toast.LENGTH_LONG);
         myToast.show();
 
+        // TODO: Vedere come ripassare l'informazione dall'AlarmReceiver all'Activity
         allarmeImpostato=true;
 
         setNotification();
@@ -321,31 +326,34 @@ public class MainActivity extends ActionBarActivity {
 
         long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
 
-        // Lancio la main activity se clicco sulla notifica
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        // Lancio la main activity se clicco sulla notifica - FATTO MEGLIO SECONDO QUANTO DICE LA GUIDA ANDROID
+//        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//        // Lancio solo una attività e cancello tutte le eventuali altre
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        // al click riattivo la main activity
+//        PendingIntent notifyPIntent = PendingIntent.getActivity(context, R.integer.intentMainActivity,
+//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
 
-        PendingIntent notifyPIntent = PendingIntent.getActivity(context, R.integer.intentMainActivity,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Preservo la navigazione tra le activity (vedi http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications)
+        Intent mainActivityIntent = new Intent(context,MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(mainActivityIntent);
+        PendingIntent notifyPIntent = stackBuilder.getPendingIntent(R.integer.intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        /* // Funziona per chiudere la notifica al click senza mostrare nulla
-        PendingIntent notifyPIntent =
-                PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
-        */
+//        // check per vedere se l'allarme è impostato
+//        // TODO: Non funziona, una volta impostato l'allarme torna sempre il pending intent
+//        PendingIntent p = PendingIntent.getBroadcast(getBaseContext(),R.integer.AlarmRequestCode,
+//                new Intent(getApplicationContext(), AlarmReceiver.class),
+//                PendingIntent.FLAG_NO_CREATE) ;
+//
+//        allarmeImpostato= (p != null);
+//
+//        if (p!= null){
+//            Log.d("myTag", "Alarm is already active");
+//        }
 
-        // check per vedere se l'allarme è impostato
-        // TODO: Non funziona, una volta impostato l'allarme torna sempr eil pending intent
-        PendingIntent p = PendingIntent.getBroadcast(getBaseContext(),R.integer.AlarmRequestCode,
-                new Intent(this, AlarmReceiver.class),
-                PendingIntent.FLAG_NO_CREATE) ;
-
-        allarmeImpostato= (p != null);
-
-        if (p!= null){
-            Log.d("myTag", "Alarm is already active");
-        }
-
-        /////////////////
         if (myNotificationBuilder==null)
             myNotificationBuilder=new NotificationCompat.Builder(context);
 
@@ -366,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
             .setWhen(System.currentTimeMillis())
           //  .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.FLAG_SHOW_LIGHTS)
             .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS)
-            .setLights(Color.GREEN, 500, 500)
+            .setLights(Color.BLUE|Color.YELLOW, 1500, 500)
             .setSmallIcon(R.drawable.ic_launch_white_18dp)
             .setPriority(Notification.PRIORITY_HIGH)
             .setVibrate(pattern)
@@ -377,14 +385,13 @@ public class MainActivity extends ActionBarActivity {
             // .setProgress(100,0,false)
             .setUsesChronometer(false)
             .setContentIntent(notifyPIntent)    // Main activity come activity richiamata al click
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
             .build();
 
+//      myNotification.ledARGB=0xFF0000FF;
+//      myNotification.ledOnMS=500;
+//      myNotification.ledOffMS=500;
 
-        /*
-        myNotification.ledARGB=0xFF0000FF;
-        myNotification.ledOnMS=500;
-        myNotification.ledOffMS=500;
-*/
         notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
@@ -660,11 +667,13 @@ public class MainActivity extends ActionBarActivity {
         outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
         outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
         outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
+
+        // TODO: vedere come impostare e samvare lo stato allarme. possibile problema: quando l'allarme è impostato, l'app è cancellata, l'allarme suona, l'app potrebbe riprendere uno stato
+        // inconsistente con quello dell'allarme vero (allarme non suonato per l'app, suonato l'allarme)
     }
 
     public void showTimePickerDialog(View v) {
         TimePickerDialog mTimePicker;
-
 
         mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -685,20 +694,20 @@ public class MainActivity extends ActionBarActivity {
             }
         }, Ora, Minuto, true);//Yes 24 hour time
 
-        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,"Annulla",new DialogInterface.OnClickListener() {
+        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,getString(R.string.timePickerCancel),new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_NEGATIVE) {
                     timePickerChoseTime=false;
-                    Log.v("","Annullato il timepicker");
+                   // Log.v("","Annullato il timepicker");
                 }
             }
         });
 
-        mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE,"Ok",new DialogInterface.OnClickListener() {
+        mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE,getString(R.string.timePickerAccept),new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
                     timePickerChoseTime=true;
-                    Log.v("","Impostato il timepicker");
+                    // Log.v("","Impostato il timepicker");
                 }
             }
         });
@@ -750,8 +759,12 @@ public class MainActivity extends ActionBarActivity {
         mTimePicker.show();
     }
 
+// TODO: eliminare se non si riesce a stabilire se l'allarme è suonato o meno
     public static void setAllarme(){allarmeImpostato=true;}
+
+    // TODO: eliminare se non si riesce a stabilire se l'allarme è suonato o meno
     public static void resetAllarme(){allarmeImpostato=false;}
+
     private void aggiornaProfili(){
         // Aggiorno i valori e la label
         profiloOraGiorno[giornoSettimanaProfiloClick]=profiloOra;

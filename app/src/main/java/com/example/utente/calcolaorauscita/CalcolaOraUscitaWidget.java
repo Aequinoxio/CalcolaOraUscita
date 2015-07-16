@@ -144,7 +144,8 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
 
             // Imposto i flag per evitare di aprire nuovamente l'attività: mi serve di riaprirnw solo una
             launchActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context,0 da specificare , launchActivity, 0 da specificare anche in altri metodi ed altre classi);
+
+            // Imposto l'intent per lanciare la main activity
             PendingIntent pendingIntent = PendingIntent.getActivity(context,R.integer.intentMainActivity, launchActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
             remoteViews.setOnClickPendingIntent(R.id.calcola_ora_uscitaWDG, pendingIntent);
