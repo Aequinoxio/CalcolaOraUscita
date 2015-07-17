@@ -13,9 +13,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,12 +27,19 @@ public class AlarmReceiver extends BroadcastReceiver {
     NotificationManager notificationManager;
     Notification myNotification;
 
+    static final long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        // TODO: Impostare il pattern nelle risorse
-        // long[] pattern = this.getResources().getIntArray(R.array.NotificationVibrationPattern);
-        long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
+//        // TODO: Impostare il pattern nelle risorse
+//        // long[] pattern = this.getResources().getIntArray(R.array.NotificationVibrationPattern);
+//        int[] patternInt= context.getResources().getIntArray(R.array.NotificationVibrationPattern);
+//        long [] pattern= new long[patternInt.length];
+//        for (int i=0;i< patternInt.length;i++){
+//            pattern[i]=(long) patternInt[i];
+//        }
+//        //long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
 
         /*
         TODO: rimando indietro che l'allarme è stato eseguito
@@ -95,10 +104,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(MainActivity.STATO_ALLARME, false);
         ed.commit();
-
-        // TODO: non imposta il valore nella classe. Capire il perchè
-        // non viene considerato un codice eseguibile !!!
-        //MainActivity.resetAllarme();
 
 /*
         myNotification.ledARGB=0xff0000ff;;

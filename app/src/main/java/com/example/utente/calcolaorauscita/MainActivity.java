@@ -668,7 +668,7 @@ public class MainActivity extends ActionBarActivity {
         outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
         outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
 
-        // TODO: vedere come impostare e samvare lo stato allarme. possibile problema: quando l'allarme è impostato, l'app è cancellata, l'allarme suona, l'app potrebbe riprendere uno stato
+        // TODO: vedere come impostare e salvare lo stato allarme. possibile problema: quando l'allarme è impostato, l'app è cancellata, l'allarme suona, l'app potrebbe riprendere uno stato
         // inconsistente con quello dell'allarme vero (allarme non suonato per l'app, suonato l'allarme)
     }
 

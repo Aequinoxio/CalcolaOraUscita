@@ -29,7 +29,7 @@ import java.util.Calendar;
  */
 public class CalcolaOraUscitaWidget extends AppWidgetProvider {
 
-    // TODO: Attenzione costanti cablate
+    // Attenzione costanti cablate
     private static int Ora=8,Minuto=0;
     private static int oraProfilo=7, minutoProfilo=42;
     private static final int oraBuonoPasto=6, minutoBuonoPasto=31;
@@ -83,7 +83,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         boolean isLockScreen = category == AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD;
 
         // Aggiorno le label
-        // TODO: usare il profilo giornaliero prendendolo dalla shared prefs (da fare nella main activity o nei parametri dell'intent)
         cal=Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY,Ora);
         cal.set(Calendar.MINUTE, Minuto);
@@ -176,7 +175,6 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         String s=context.getString(R.string.ORA_INGRESSO_WIDGET);
 
         // Recupero i parametri dell'ora di ingresso oppure dalle shared prefs
-        // TODO: verificare se sia il metodo migliore oppure se occorre lasciare una istanza di aggiornamneto in background o altro
         if (intent.hasExtra(s)) {
             // TODO : Attenzione constanti cablate!
             Ora = intent.getIntExtra(s, 8);
