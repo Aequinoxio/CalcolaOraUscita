@@ -51,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 
     ////////////////////////////////////////////////////////////////////////
 
+
    // final static int RQS_1 = 1; // per lanciare l'allarme
    // final static int RQS_RINGTONEPICKER = 1 ; //per scegliere il ringtone
 
@@ -91,13 +92,15 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
     private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
-    protected static final String STATO_ALLARME= "STATO_ALLARME";
+    // TODO: Usi futuri
+    //protected static final String STATO_ALLARME= "STATO_ALLARME";
 
     // N.B. startActivityForRequest accetta solo valori a 16 bit (!!!)
     private static final int RingTonePickerRequestCode = R.integer.RingTonePickerRequestCode & 0xffff;
 
+    // TODO: Usi futuri
     // Tengo traccia se ho impostato l'allarme
-    static boolean allarmeImpostato;
+    //static boolean allarmeImpostato;
 
     // Variabili per impostare le notifiche
     Notification myNotification=null;
@@ -123,27 +126,35 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // imposto
-        allarmeImpostato=false;
+        // VAriabile per verificare se l'allarme è impostato
+        // TODO: va tolto se si decide di non mostrare nulla
+//        TODO: Usi futuri
+//        allarmeImpostato=false;
 
-        // DEBUG
+        // Tengo conto delle istanze allocate per ogni futura evenienza
+        // TODO: da togliere se non serve più
         istanzeMainActivity++;
-        TextView t = (TextView) findViewById(R.id.lblMainActivityIstanze);
-        t.setText(String.format("%d",istanzeMainActivity));
 
         // In debug mode accendo quello che mi serve per il debug
         if (BuildConfig.DEBUG){
             Button b = (Button) findViewById(R.id.btnRingTone);
             b.setVisibility(View.GONE);
 
+            // DEBUG, accendo il visualizzatore di istanze
+            TextView t = (TextView) findViewById(R.id.lblMainActivityIstanze);
+            t.setText(String.format("%d",istanzeMainActivity));
+
         } else {
             Button b = (Button) findViewById(R.id.btnRingTone);
             b.setVisibility(View.GONE);
+            TextView t = (TextView) findViewById(R.id.lblMainActivityIstanze);
+            t.setVisibility(View.GONE);
         }
 
         // alloco 5 interi per ore e minuti che costituiscono il profilo orario giornaliero
-        profiloOraGiorno = new int[5];
-        profiloMinutoGiorno = new int [5];
+        // + 2 per sabato e domenica che per ora non modifico
+        profiloOraGiorno = new int[7];
+        profiloMinutoGiorno = new int [7];
 
         setOraIngresso = (Button) findViewById(R.id.buttonSetOraIngresso);
         updateOraIngresso = (Button) findViewById(R.id.buttonUpdateOraIngresso);
@@ -206,21 +217,22 @@ public class MainActivity extends ActionBarActivity {
             Ora = settings.getInt(STATO_ORA, 8);
             Minuto = settings.getInt(STATO_MINUTO,0);
 
-            allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
+//            TODO: Usi futuri
+//            allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
 
             // Recupero il profilo orario
             // ora
             String savedString;
             savedString = settings.getString(STATO_PROFILO_ORA_ARRAY, getString(R.string.DEFAULT_PROFILO_ORA));
             StringTokenizer st = new StringTokenizer(savedString,getString(R.string.SEPARATORE_CAMPI));
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 7; i++) {
                 profiloOraGiorno[i] = Integer.parseInt(st.nextToken());
             }
 
             // minuto
             savedString = settings.getString(STATO_PROFILO_MINUTO_ARRAY, getString(R.string.DEFAULT_PROFILO_MINUTO));
             st = new StringTokenizer(savedString,getString(R.string.SEPARATORE_CAMPI));
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 7; i++) {
                 profiloMinutoGiorno[i] = Integer.parseInt(st.nextToken());
             }
 
@@ -314,7 +326,8 @@ public class MainActivity extends ActionBarActivity {
         myToast.show();
 
         // TODO: Vedere come ripassare l'informazione dall'AlarmReceiver all'Activity
-        allarmeImpostato=true;
+//        TODO: Usi futuri
+//        allarmeImpostato=true;
 
         setNotification();
     }
@@ -342,6 +355,7 @@ public class MainActivity extends ActionBarActivity {
         stackBuilder.addNextIntent(mainActivityIntent);
         PendingIntent notifyPIntent = stackBuilder.getPendingIntent(R.integer.intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        // TODO: Usi futuri
 //        // check per vedere se l'allarme è impostato
 //        // TODO: Non funziona, una volta impostato l'allarme torna sempre il pending intent
 //        PendingIntent p = PendingIntent.getBroadcast(getBaseContext(),R.integer.AlarmRequestCode,
@@ -359,7 +373,8 @@ public class MainActivity extends ActionBarActivity {
 
         myNotification = myNotificationBuilder
             .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle)
-                            + ((allarmeImpostato) ? " (" + context.getString(R.string.NotificationStartTextAlarmSet) + ")" : "")
+                            //TODO: Usi futuri
+                            // + ((allarmeImpostato) ? " (" + context.getString(R.string.NotificationStartTextAlarmSet) + ")" : "")
             )
             .setContentText(context.getString(R.string.NotificationStartText) + ": " +
                             String.format("%02d", calOut.get(Calendar.HOUR_OF_DAY)) + ": " + String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n" +
@@ -415,23 +430,37 @@ public class MainActivity extends ActionBarActivity {
 
         int textID=0; // ID temporaneo per recuperare la textview corrispondente al giorno della settimana
 
-        int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+        // Verifico il giorno della settimana per segnarlo (indipendentemente dalla data di aggiornamento)
+        //int giornoSettimana =calOut.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+        Calendar calAppoggio=Calendar.getInstance();
+        int giornoSettimana =calAppoggio.get(Calendar.DAY_OF_WEEK); // TODO: Workaround per ora. In futuro usare una lista ed foreach
+
+        // Imposto la label per il giorno corrente
+        testo = (TextView) findViewById(R.id.lblDataOdierna);
+        testo.setText(
+                String.format("%02d", calAppoggio.get(Calendar.DAY_OF_MONTH)) + "/" + String.format("%02d", calAppoggio.get(Calendar.MONTH)+1) + "/" + String.format("%04d", calAppoggio.get(Calendar.YEAR))
+        );
+
+        // Libero memoria
+        calAppoggio=null;
+
+        weekend = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
         switch (giornoSettimana){ // TODO: workaround per ora. Ridefinire in modo da usare tutti i giorni della settimana
-            case Calendar.SATURDAY :
-            case Calendar.SUNDAY: weekend = true;
-            case Calendar.MONDAY: textID=R.id.lunLBL; giornoSettimana=0; break;
-            case Calendar.TUESDAY:  textID=R.id.marLBL; giornoSettimana=1; break;
-            case Calendar.WEDNESDAY: textID=R.id.merLBL; giornoSettimana=2;break;
-            case Calendar.THURSDAY: textID=R.id.gioLBL; giornoSettimana=3;break;
-            case Calendar.FRIDAY:   textID=R.id.venLBL; giornoSettimana=4;break;
+            case Calendar.SATURDAY :    textID=R.id.sabLBL; giornoSettimana=5; break;
+            case Calendar.SUNDAY:       textID=R.id.domLBL; giornoSettimana=6; break ;
+            case Calendar.MONDAY:       textID=R.id.lunLBL; giornoSettimana=0; break;
+            case Calendar.TUESDAY:      textID=R.id.marLBL; giornoSettimana=1; break;
+            case Calendar.WEDNESDAY:    textID=R.id.merLBL; giornoSettimana=2;break;
+            case Calendar.THURSDAY:     textID=R.id.gioLBL; giornoSettimana=3;break;
+            case Calendar.FRIDAY:       textID=R.id.venLBL; giornoSettimana=4;break;
         }
 
         // imposto il colore del giorno attuale in base al fatto che sia o meno il weekend
         // imposto la progress bar della settimana e la azzero se sono nel weekend
+        // TODO: attenzione costante 5 giorni lavorativi cablata
         ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setMax(5);
         //testo = (TextView) findViewById(R.id.workDayLBL);
-        weekend = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
         if (weekend) {
             //testo.setBackgroundResource(R.drawable.roundedrect_green);
             //pb.setBackgroundResource(R.drawable.roundedrect_green);
@@ -474,10 +503,18 @@ public class MainActivity extends ActionBarActivity {
         testo.setBackground(null);
         testo = (TextView) findViewById(R.id.venLBL);
         testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.sabLBL);
+        testo.setBackground(null);
+        testo = (TextView) findViewById(R.id.domLBL);
+        testo.setBackground(null);
 
-        // imposto il nuovo sfondo
+        // imposto il nuovo sfondo solo se non è un weekend, per i weekend uso il verde
         testo = (TextView) findViewById(textID);
-        testo.setBackground(res.getDrawable(R.color.button_material_light));
+        if (!weekend) {
+            testo.setBackground(res.getDrawable(android.R.color.holo_red_light));
+        } else {
+            testo.setBackground(res.getDrawable(android.R.color.holo_green_light));
+        }
 
         // Imposto le label dei profili orari
         testo = (TextView) findViewById(R.id.profiloLunVal);
@@ -668,6 +705,7 @@ public class MainActivity extends ActionBarActivity {
         outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
         outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
 
+        // TODO: Usi futuri
         // TODO: vedere come impostare e salvare lo stato allarme. possibile problema: quando l'allarme è impostato, l'app è cancellata, l'allarme suona, l'app potrebbe riprendere uno stato
         // inconsistente con quello dell'allarme vero (allarme non suonato per l'app, suonato l'allarme)
     }
@@ -738,6 +776,7 @@ public class MainActivity extends ActionBarActivity {
 
         profiloLBLClicked=v.getId();
 
+        // Modifico solo i profili dei 5 giorni lavorativi
         switch (profiloLBLClicked){ // TODO: workaround per ora
             case R.id.profiloLunVal: giornoSettimanaProfiloClick=0 ; break;
             case R.id.profiloMarVal: giornoSettimanaProfiloClick=1 ;break;
@@ -758,12 +797,6 @@ public class MainActivity extends ActionBarActivity {
         mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
         mTimePicker.show();
     }
-
-// TODO: eliminare se non si riesce a stabilire se l'allarme è suonato o meno
-    public static void setAllarme(){allarmeImpostato=true;}
-
-    // TODO: eliminare se non si riesce a stabilire se l'allarme è suonato o meno
-    public static void resetAllarme(){allarmeImpostato=false;}
 
     private void aggiornaProfili(){
         // Aggiorno i valori e la label

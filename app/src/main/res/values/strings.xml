@@ -30,14 +30,16 @@
     <string name="default_hour_min_value">--:--</string>
 
     <string name="PREFS_NAME">CalcolaOraUscita</string>
-    <string name="DEFAULT_PROFILO_ORA">7,7,7,7,7</string>
-    <string name="DEFAULT_PROFILO_MINUTO">42,42,42,42,42</string>
+    <string name="DEFAULT_PROFILO_ORA">7,7,7,7,7,7,7</string>
+    <string name="DEFAULT_PROFILO_MINUTO">42,42,42,42,42,42,42</string>
     <string name="SEPARATORE_CAMPI">,</string>
     <string name="lunLBLValue">Lun</string>
     <string name="marLBLValue">Mar</string>
     <string name="merLBLValue">Mer</string>
     <string name="gioLBLValue">Gio</string>
     <string name="venLBLValue">Ven</string>
+    <string name="sabLBLValue">Sab</string>
+    <string name="domLBLValue">Dom</string>
 
     <string name="linear_widget_name">Calcola ora uscita lungo</string>
     <string name="square_widget_name">Calcola ora uscita quadrato</string>
@@ -65,5 +67,6 @@
 
     <string name="timePickerCancel">Annulla</string>
     <string name="timePickerAccept">Ok</string>
+    <string name="weekendLoader">Caricatore di weekend</string>
 
 </resources>

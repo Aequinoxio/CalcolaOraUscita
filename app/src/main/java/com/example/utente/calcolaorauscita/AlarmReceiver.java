@@ -102,7 +102,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         // TODO: completare leggendo il valore nella main activity
         SharedPreferences sp = context.getSharedPreferences(MainActivity.PREFS_NAME, 0);
         SharedPreferences.Editor ed = sp.edit();
-        ed.putBoolean(MainActivity.STATO_ALLARME, false);
+
+        // TODO: Usi futuri
+        // ed.putBoolean(MainActivity.STATO_ALLARME, false);
+
         ed.commit();
 
 /*
@@ -120,4 +123,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 + "***\n");
 
     }
+
+
 }

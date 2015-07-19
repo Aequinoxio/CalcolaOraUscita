@@ -4,7 +4,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/margin_tiny"
     tools:context=".MainActivity"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:id="@+id/relativeLayout">
 
     <TextView
         android:layout_width="wrap_content"
@@ -22,9 +23,10 @@
         android:id="@+id/buttonUpdateOraIngresso"
         android:clickable="true"
         android:checked="false"
+        android:enabled="false"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:enabled="false" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <AnalogClock
         android:layout_width="wrap_content"
@@ -38,13 +40,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_below="@+id/analogClock"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="false"
-        android:layout_centerInParent="true"
-        android:id="@+id/linearLayout8">
+        android:id="@+id/linearLayout8"
+        android:layout_below="@+id/progressBar"
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,10 +50,9 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/UltimoAggiornamento"
             android:id="@+id/textView6"
-            android:layout_alignBottom="@+id/analogClock"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginRight="@dimen/margin_tiny" />
+            android:layout_below="@+id/progressBar"
+            android:layout_alignLeft="@+id/textWelcomeString"
+            android:layout_alignStart="@+id/textWelcomeString" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,8 +60,9 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/DefaultDate"
             android:id="@+id/dataAggiornamento"
-            android:layout_below="@+id/analogClock"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignTop="@+id/textView6"
+            android:layout_alignRight="@+id/buttonUpdateOraIngresso"
+            android:layout_alignEnd="@+id/buttonUpdateOraIngresso" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -74,12 +72,16 @@
         android:layout_above="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout3"
+        android:id="@+id/ProfiloOrariolinearLayout"
         android:layout_marginBottom="@dimen/margin_medium">
 
         <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:background="@drawable/roundedrect_table"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_tiny">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -94,11 +96,10 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/lunLBLValue"
                     android:id="@+id/lunLBL"
-                    android:paddingRight="@dimen/margin_medium"
                     android:elegantTextHeight="false"
                     android:editable="false"
                     android:fadeScrollbars="false"
-                    android:paddingLeft="@dimen/margin_small" />
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -106,9 +107,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/marLBLValue"
                     android:id="@+id/marLBL"
-                    android:layout_column="3"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium" />
+                    android:layout_column="1"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,9 +116,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/merLBLValue"
                     android:id="@+id/merLBL"
-                    android:layout_column="6"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium" />
+                    android:layout_column="2"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -126,9 +125,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/gioLBLValue"
                     android:id="@+id/gioLBL"
-                    android:layout_column="7"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium" />
+                    android:layout_column="3"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -136,9 +134,24 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/venLBLValue"
                     android:id="@+id/venLBL"
-                    android:layout_column="8"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium" />
+                    android:layout_column="4"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/sabLBLValue"
+                    android:id="@+id/sabLBL"
+                    android:layout_column="5"
+                    android:gravity="center_horizontal" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
             </TableRow>
 
             <TableRow
@@ -151,11 +164,10 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/default_hour_min_value"
                     android:id="@+id/profiloLunVal"
-                    android:paddingRight="@dimen/margin_medium"
                     android:clickable="true"
                     android:onClick="showTimePickerDialogProfilo"
                     android:enabled="true"
-                    android:paddingLeft="@dimen/margin_small" />
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -163,12 +175,11 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/default_hour_min_value"
                     android:id="@+id/profiloMarVal"
-                    android:layout_column="3"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium"
+                    android:layout_column="1"
                     android:clickable="true"
                     android:onClick="showTimePickerDialogProfilo"
-                    android:enabled="true" />
+                    android:enabled="true"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -176,12 +187,11 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/default_hour_min_value"
                     android:id="@+id/profiloMerVal"
-                    android:layout_column="6"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium"
+                    android:layout_column="2"
                     android:clickable="true"
                     android:onClick="showTimePickerDialogProfilo"
-                    android:enabled="true" />
+                    android:enabled="true"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -189,12 +199,11 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/default_hour_min_value"
                     android:id="@+id/profiloGioVal"
-                    android:layout_column="7"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium"
+                    android:layout_column="3"
                     android:clickable="true"
                     android:onClick="showTimePickerDialogProfilo"
-                    android:enabled="true" />
+                    android:enabled="true"
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -202,12 +211,21 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/default_hour_min_value"
                     android:id="@+id/profiloVenVal"
-                    android:layout_column="8"
-                    android:paddingLeft="@dimen/margin_small"
-                    android:paddingRight="@dimen/margin_medium"
+                    android:layout_column="4"
                     android:clickable="true"
                     android:onClick="showTimePickerDialogProfilo"
-                    android:enabled="true" />
+                    android:enabled="true"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/domLBLValue"
+                    android:id="@+id/domLBL"
+                    android:layout_column="5"
+                    android:gravity="center_horizontal" />
+
             </TableRow>
         </TableLayout>
     </LinearLayout>
@@ -228,43 +246,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Ora uscita"
         android:id="@+id/textView3"
-        android:layout_above="@+id/buttonAnnulla"
+        android:layout_above="@+id/SceltaOraLayoutLinear"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setOraIngresso"
-        android:id="@+id/buttonSetOraIngresso"
-        android:layout_above="@+id/buttonUpdateOraIngresso"
-        android:layout_centerHorizontal="true"
-        android:enabled="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buttonAnnulla"
-        android:id="@+id/buttonAnnulla"
-        android:enabled="false"
-        android:layout_alignBaseline="@+id/buttonSetOraIngresso"
-        android:layout_alignBottom="@+id/buttonSetOraIngresso"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buttonTimePicker"
-        android:id="@+id/buttonTimePicker"
-        android:onClick="showTimePickerDialog"
-        android:enabled="true"
-        android:layout_alignTop="@+id/buttonSetOraIngresso"
-        android:layout_toRightOf="@+id/textWelcomeString"
-        android:layout_toEndOf="@+id/textWelcomeString"
-        android:singleLine="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -293,9 +277,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Buono Pasto"
         android:id="@+id/textView"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_alignRight="@+id/linearLayout3"
-        android:layout_alignEnd="@+id/linearLayout3" />
+        android:layout_below="@+id/ProfiloOrariolinearLayout"
+        android:layout_alignRight="@+id/ProfiloOrariolinearLayout"
+        android:layout_alignEnd="@+id/ProfiloOrariolinearLayout" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -313,9 +297,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/ProfiloOrarioLBL"
         android:id="@+id/textView10"
-        android:layout_above="@+id/linearLayout3"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3" />
+        android:textStyle="bold"
+        android:layout_above="@+id/ProfiloOrariolinearLayout"
+        android:layout_centerHorizontal="true" />
 
     <ProgressBar
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
@@ -323,9 +307,10 @@
         android:layout_height="@dimen/margin_medium"
         android:id="@+id/progressBar"
         android:indeterminate="false"
-        android:layout_below="@+id/linearLayout8"
-        android:layout_centerHorizontal="true"
-        android:progressDrawable="@drawable/greenprogress" />
+        android:progressDrawable="@drawable/greenprogress"
+        android:layout_below="@+id/lblDataOdierna"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -340,6 +325,84 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Numero attività avviate"
+        android:id="@+id/lblMainActivityIstanze"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView10"
+        android:layout_toEndOf="@+id/textView10" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/DefaultDate"
+        android:id="@+id/lblDataOdierna"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/analogClock"
+        android:layout_centerHorizontal="true" />
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonUpdateOraIngresso"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:id="@+id/SceltaOraLayoutLinear"
+        android:measureWithLargestChild="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/buttonAnnulla"
+                android:id="@+id/buttonAnnulla"
+                android:enabled="false"
+                android:layout_alignBaseline="@+id/buttonSetOraIngresso"
+                android:layout_alignBottom="@+id/buttonSetOraIngresso"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setOraIngresso"
+                android:id="@+id/buttonSetOraIngresso"
+                android:layout_above="@+id/buttonUpdateOraIngresso"
+                android:layout_centerHorizontal="true"
+                android:enabled="true"
+                android:layout_column="2" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/buttonTimePicker"
+                android:id="@+id/buttonTimePicker"
+                android:onClick="showTimePickerDialog"
+                android:enabled="true"
+                android:layout_alignTop="@+id/buttonSetOraIngresso"
+                android:layout_toRightOf="@+id/textWelcomeString"
+                android:layout_toEndOf="@+id/textWelcomeString"
+                android:singleLine="true"
+                android:layout_column="4" />
+
+        </TableRow>
+    </TableLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -347,16 +410,18 @@
         android:id="@+id/btnNotifica"
         style="?android:attr/buttonStyleSmall"
         android:onClick="showNotification"
-        android:layout_above="@+id/textView10"
+        android:layout_column="5"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/lblMainActivityIstanze"
-        android:layout_below="@+id/progressBar"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/weekendLoader"
+        android:id="@+id/textView12"
+        android:layout_alignTop="@+id/progressBar"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
