@@ -1,8 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="@dimen/widget_margin" android:background="@android:color/transparent"
+    android:background="@android:color/transparent"
     android:id="@+id/calcola_ora_uscitaWDG"
-    android:clickable="true">
+    android:clickable="true"
+    tools:showIn="@layout/calcola_ora_uscita_widget_info"
+    android:gravity="center_horizontal">
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,111 +21,205 @@
             android:clickable="false"
             android:id="@+id/laySfondo">
 
-            <TextView
-                android:id="@+id/OraUscitaTXT"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/OraUscitaValueWidgetLBL"
-                android:textColor="#ffffff"
-                android:textSize="24sp"
-                android:textStyle="bold|italic"
-                android:contentDescription="@string/appwidget_text"
-                android:background="@android:color/transparent"
-                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                android:layout_below="@+id/imageView"
-                android:layout_alignLeft="@+id/OraIngressoTXT"
-                android:layout_alignStart="@+id/OraIngressoTXT" />
-
-            <TextView
-                android:id="@+id/OraIngressoTXT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/OraIngressoValueWidgetLBL"
-                android:textColor="#ffffff"
-                android:textSize="24sp"
-                android:textStyle="bold|italic"
-                android:contentDescription="@string/appwidget_text"
-                android:background="@android:color/transparent"
-                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                android:layout_alignBottom="@+id/imageView"
-                android:layout_toRightOf="@+id/imageView"
-                android:layout_toEndOf="@+id/imageView" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:id="@+id/imageView"
-                android:src="@drawable/ic_exit_to_app_white_36dp"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:id="@+id/imageView3"
-                android:src="@drawable/ic_description_white_36dp"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
-                android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
-
-            <TextView
-                android:id="@+id/OraBuonoPastoTXT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/OraUscitaValueWidgetLBL"
-                android:textColor="#ffffff"
-                android:textSize="24sp"
-                android:textStyle="bold|italic"
-                android:contentDescription="@string/appwidget_text"
-                android:background="@android:color/transparent"
-                android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                android:layout_alignBottom="@+id/imageView3"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:gravity="center_horizontal"
+                android:id="@+id/icone">
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:id="@+id/imageView2"
-                android:src="@drawable/ic_launch_white_36dp"
-                android:layout_alignBottom="@+id/OraUscitaTXT"
-                android:layout_toLeftOf="@+id/OraUscitaTXT"
-                android:layout_toStartOf="@+id/OraUscitaTXT" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="false"
+                    android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView"
+                        android:src="@drawable/ic_exit_to_app_white_36dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:id="@+id/OraIngressoTXT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/OraIngressoValueWidgetLBL"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic"
+                        android:contentDescription="@string/appwidget_text"
+                        android:background="@android:color/transparent"
+                        android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                        android:layout_alignBottom="@+id/imageView"
+                        android:layout_toRightOf="@+id/imageView"
+                        android:layout_toEndOf="@+id/imageView"
+                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView3"
+                        android:src="@drawable/ic_description_white_36dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
+                        android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
+
+                    <TextView
+                        android:id="@+id/OraBuonoPastoTXT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/OraUscitaValueWidgetLBL"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic"
+                        android:contentDescription="@string/appwidget_text"
+                        android:background="@android:color/transparent"
+                        android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                        android:layout_alignBottom="@+id/imageView3"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
+                </LinearLayout>
+
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="@dimen/margin_large"
+                    android:layout_height="@dimen/margin_large"
+                    android:id="@+id/progressBar"
+                    android:indeterminate="false"
+                    android:background="@drawable/roundedrect"
+                    android:backgroundTint="@android:color/holo_red_light"
+                    android:progressDrawable="@drawable/circular"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/DefaultDate"
-                android:id="@+id/dataAggiornamento"
-                android:layout_alignBottom="@+id/OraUscitaTXT"
-                android:layout_alignRight="@+id/OraBuonoPastoTXT"
-                android:layout_alignEnd="@+id/OraBuonoPastoTXT"
-                android:textColor="@android:color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/UltimoAgg"
-                android:id="@+id/textView8"
-                android:textColor="@android:color/white"
-                android:layout_alignBottom="@+id/dataAggiornamento"
-                android:layout_toLeftOf="@+id/dataAggiornamento"
-                android:layout_toStartOf="@+id/dataAggiornamento" />
-
-            <ProgressBar
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="@dimen/margin_large"
-                android:layout_height="@dimen/margin_large"
-                android:id="@+id/progressBar"
-                android:indeterminate="false"
-                android:background="@drawable/roundedrect"
-                android:backgroundTint="@android:color/holo_red_light"
-                android:layout_alignTop="@+id/OraIngressoTXT"
+                android:id="@+id/stato"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignStart="@id/icone"
+                android:layout_below="@+id/icone"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentTop="false"
                 android:layout_centerHorizontal="true"
-                android:progressDrawable="@drawable/circular" />
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="false"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView2"
+                        android:src="@drawable/ic_launch_white_36dp"
+                        android:layout_alignBottom="@+id/OraUscitaTXT"
+                        android:layout_toLeftOf="@+id/OraUscitaTXT"
+                        android:layout_toStartOf="@+id/OraUscitaTXT" />
+
+                    <TextView
+                        android:id="@+id/OraUscitaTXT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/OraUscitaValueWidgetLBL"
+                        android:textColor="#ffffff"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic"
+                        android:contentDescription="@string/appwidget_text"
+                        android:background="@android:color/transparent"
+                        android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                        android:layout_below="@+id/imageView"
+                        android:layout_alignLeft="@+id/OraIngressoTXT"
+                        android:layout_alignStart="@+id/OraIngressoTXT"
+                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/linearLayout3">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical|end">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/UltimoAggiornamento"
+                            android:id="@+id/textView8"
+                            android:textColor="@android:color/white"
+                            android:textSize="8sp"
+                            android:layout_alignTop="@+id/allarmeImpostato"
+                            android:layout_alignRight="@+id/OraBuonoPastoTXT"
+                            android:layout_alignEnd="@+id/OraBuonoPastoTXT"
+                            android:layout_gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/DefaultDate"
+                            android:id="@+id/dataAggiornamento"
+                            android:textColor="@android:color/white"
+                            android:textSize="8sp"
+                            android:layout_below="@+id/textView8"
+                            android:layout_alignRight="@+id/textView8"
+                            android:layout_alignEnd="@+id/textView8"
+                            android:layout_gravity="center_horizontal" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:id="@+id/allarmeImpostato"
+                    android:src="@drawable/ic_alarm_white_18dp"
+                    android:longClickable="false"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
 
         </RelativeLayout>
     </LinearLayout>

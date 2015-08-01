@@ -331,8 +331,8 @@
         android:text="Numero attività avviate"
         android:id="@+id/lblMainActivityIstanze"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/textView10"
-        android:layout_toEndOf="@+id/textView10" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -423,5 +423,14 @@
         android:id="@+id/textView12"
         android:layout_alignTop="@+id/progressBar"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/allarmeImpostato"
+        android:src="@drawable/ic_alarm_black_18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

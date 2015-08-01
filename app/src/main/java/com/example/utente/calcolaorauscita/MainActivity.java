@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import android.widget.Button;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -92,15 +93,14 @@ public class MainActivity extends ActionBarActivity {
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
     private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
 
-    // TODO: Usi futuri
-    //protected static final String STATO_ALLARME= "STATO_ALLARME";
+    public static final String STATO_ALLARME= "STATO_ALLARME";
 
     // N.B. startActivityForRequest accetta solo valori a 16 bit (!!!)
     private static final int RingTonePickerRequestCode = R.integer.RingTonePickerRequestCode & 0xffff;
 
-    // TODO: Usi futuri
     // Tengo traccia se ho impostato l'allarme
-    //static boolean allarmeImpostato;
+    static boolean allarmeImpostato;
+   // private AlarmReceiver updateReceiver;   // Receiver per aggiornare lo stato dell'allarme
 
     // Variabili per impostare le notifiche
     Notification myNotification=null;
@@ -126,10 +126,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // VAriabile per verificare se l'allarme è impostato
-        // TODO: va tolto se si decide di non mostrare nulla
-//        TODO: Usi futuri
-//        allarmeImpostato=false;
+        // Variabile per verificare se l'allarme è impostato
+        allarmeImpostato=false;
 
         // Tengo conto delle istanze allocate per ogni futura evenienza
         // TODO: da togliere se non serve più
@@ -175,6 +173,7 @@ public class MainActivity extends ActionBarActivity {
         uriRingTone=Uri.parse("");
 
         // Ripristino o imposto l'ora di ingresso e calcolo l'ora di uscita
+        /*
         if (savedInstanceState != null) {
             Boolean  buttonEnabled;
 
@@ -183,6 +182,8 @@ public class MainActivity extends ActionBarActivity {
             Minuto =savedInstanceState.getInt(STATO_MINUTO);
             profiloOraGiorno=savedInstanceState.getIntArray(STATO_PROFILO_ORA_ARRAY);
             profiloMinutoGiorno=savedInstanceState.getIntArray(STATO_PROFILO_MINUTO_ARRAY);
+
+            allarmeImpostato=savedInstanceState.getBoolean(STATO_ALLARME,false);
 
             try {
                 dataAggiornamento=savedInstanceState.getString(STATO_DATA_AGGIORNAMENTO);
@@ -210,6 +211,7 @@ public class MainActivity extends ActionBarActivity {
             timePicker.setEnabled(buttonEnabled);
 
         } else {
+            */
             // Restore preferences
             SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 
@@ -217,8 +219,7 @@ public class MainActivity extends ActionBarActivity {
             Ora = settings.getInt(STATO_ORA, 8);
             Minuto = settings.getInt(STATO_MINUTO,0);
 
-//            TODO: Usi futuri
-//            allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
+            allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
 
             // Recupero il profilo orario
             // ora
@@ -247,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
             calIn.set(Calendar.HOUR_OF_DAY, Ora);
             calIn.set(Calendar.MINUTE, Minuto);
             aggiornaValori();
-        }
+     /*   }  */ // Chiusura dell'if
 
         setOraIngresso.setOnClickListener(
             new Button.OnClickListener() {
@@ -256,6 +257,7 @@ public class MainActivity extends ActionBarActivity {
                     calOut = Calendar.getInstance();
                     Ora=calIn.get(Calendar.HOUR_OF_DAY);
                     Minuto=calIn.get(Calendar.MINUTE);
+                    allarmeImpostato=true;
 
                     aggiornaValori();
 
@@ -304,7 +306,15 @@ public class MainActivity extends ActionBarActivity {
                 + this.getString(R.string.setAlarmToastInfo) + " " + targetCal.getTime() + "\n"
                 + "***\n");
 
+        // Aggiorno la sharefPrefs per mantenere lo stato dell'allarme
+        SharedPreferences sp = getSharedPreferences(PREFS_NAME,0);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean(STATO_ALLARME,allarmeImpostato);
+        ed.commit();
+
+        // Invio il broadcast
         Intent intent = new Intent(this, AlarmReceiver.class);
+
         intent.putExtra(getString(R.string.alarmIntentRingToneUri), uriRingTone);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getBaseContext(),
@@ -324,10 +334,6 @@ public class MainActivity extends ActionBarActivity {
                           ),
                 Toast.LENGTH_LONG);
         myToast.show();
-
-        // TODO: Vedere come ripassare l'informazione dall'AlarmReceiver all'Activity
-//        TODO: Usi futuri
-//        allarmeImpostato=true;
 
         setNotification();
     }
@@ -355,26 +361,13 @@ public class MainActivity extends ActionBarActivity {
         stackBuilder.addNextIntent(mainActivityIntent);
         PendingIntent notifyPIntent = stackBuilder.getPendingIntent(R.integer.intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // TODO: Usi futuri
-//        // check per vedere se l'allarme è impostato
-//        // TODO: Non funziona, una volta impostato l'allarme torna sempre il pending intent
-//        PendingIntent p = PendingIntent.getBroadcast(getBaseContext(),R.integer.AlarmRequestCode,
-//                new Intent(getApplicationContext(), AlarmReceiver.class),
-//                PendingIntent.FLAG_NO_CREATE) ;
-//
-//        allarmeImpostato= (p != null);
-//
-//        if (p!= null){
-//            Log.d("myTag", "Alarm is already active");
-//        }
 
         if (myNotificationBuilder==null)
             myNotificationBuilder=new NotificationCompat.Builder(context);
 
         myNotification = myNotificationBuilder
             .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle)
-                            //TODO: Usi futuri
-                            // + ((allarmeImpostato) ? " (" + context.getString(R.string.NotificationStartTextAlarmSet) + ")" : "")
+                            + ((allarmeImpostato) ? " (" + context.getString(R.string.NotificationStartTextAlarmSet) + ")" : "")
             )
             .setContentText(context.getString(R.string.NotificationStartText) + ": " +
                             String.format("%02d", calOut.get(Calendar.HOUR_OF_DAY)) + ": " + String.format("%02d", calOut.get(Calendar.MINUTE)) + "\n" +
@@ -389,8 +382,8 @@ public class MainActivity extends ActionBarActivity {
             .setWhen(System.currentTimeMillis())
           //  .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.FLAG_SHOW_LIGHTS)
             .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS)
-            .setLights(Color.BLUE|Color.YELLOW, 1500, 500)
-            .setSmallIcon(R.drawable.ic_launch_white_18dp)
+            .setLights(Color.BLUE, 1500, 500)
+            .setSmallIcon(R.drawable.ic_exit_to_app_white_18dp)
             .setPriority(Notification.PRIORITY_HIGH)
             .setVibrate(pattern)
             .setShowWhen(true)
@@ -415,7 +408,7 @@ public class MainActivity extends ActionBarActivity {
         String s;
         TextView testo;
         Resources res = getResources();
-        boolean weekend= false;
+        boolean weekend;
 
         // Aggiorno l'ora per il buono pasto
         calBP.setTime(calIn.getTime());
@@ -442,7 +435,7 @@ public class MainActivity extends ActionBarActivity {
         );
 
         // Libero memoria
-        calAppoggio=null;
+        //calAppoggio=null;
 
         weekend = ((Calendar.getInstance().get(Calendar.DAY_OF_WEEK)== Calendar.SATURDAY) || (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY));
         switch (giornoSettimana){ // TODO: workaround per ora. Ridefinire in modo da usare tutti i giorni della settimana
@@ -544,8 +537,16 @@ public class MainActivity extends ActionBarActivity {
         annullaUpdateOraIngresso.setEnabled(false);
         timePicker.setEnabled(false);
 
+        ImageView imageView = (ImageView) findViewById(R.id.allarmeImpostato);
+
+        if (!allarmeImpostato)
+            imageView.setVisibility(View.INVISIBLE);
+        else
+            imageView.setVisibility(View.VISIBLE);
+
         // Invio un broadcast ai widget con i valori aggiornati di ora e minuto ingresso
         Intent intent = new Intent(this, CalcolaOraUscitaWidget.class);
+        intent.putExtra(STATO_ALLARME,allarmeImpostato);
         intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
         intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET), Minuto);
 
@@ -557,6 +558,7 @@ public class MainActivity extends ActionBarActivity {
 
         // TODO: Sto provando ad aggiornare anche gli altri widget anche se mi sembra strano farlo così...
         intent = new Intent(this, CalcolaOraUscitaWidget_2x2.class);
+        intent.putExtra(STATO_ALLARME,allarmeImpostato);
         intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
         intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET),Minuto);
 
@@ -567,6 +569,7 @@ public class MainActivity extends ActionBarActivity {
         sendBroadcast(intent);
 
         intent = new Intent(this, CalcolaOraUscitaWidget_1x1.class);
+        intent.putExtra(STATO_ALLARME,allarmeImpostato);
         intent.putExtra(getString(R.string.ORA_INGRESSO_WIDGET), Ora);
         intent.putExtra(getString(R.string.MINUTO_INGRESSO_WIDGET),Minuto);
 
@@ -624,6 +627,30 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Comanda l'alarm receiver (in caso qui allarme impostato sia true e la shared false vale il valore nella shared prefs
+        // outState.putBoolean(STATO_ALLARME,allarmeImpostato);
+        SharedPreferences sp = getSharedPreferences(PREFS_NAME,0);
+        allarmeImpostato= sp.getBoolean(STATO_ALLARME,false);
+        outState.putBoolean(STATO_ALLARME,allarmeImpostato);
+
+        outState.putBoolean(SET_BUTTON, setOraIngresso.isEnabled());
+        outState.putBoolean(UPDATE_BUTTON, updateOraIngresso.isEnabled());
+        outState.putBoolean(ANNULLA_BUTTON, annullaUpdateOraIngresso.isEnabled());
+
+        outState.putInt(STATO_ORA, Ora);
+        outState.putInt(STATO_MINUTO, Minuto);
+
+        outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
+        outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
+        outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
+
+    }
+
+
+    @Override
     protected void onStop(){
         super.onStop();
 
@@ -634,6 +661,10 @@ public class MainActivity extends ActionBarActivity {
         // All objects are from android.context.Context
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
+
+        // Comanda l'alarm receiver (in caso qui allarme impostato sia true e la shared false vale il valore nella shared prefs
+       editor.putBoolean(STATO_ALLARME,allarmeImpostato);
+
         editor.putInt(STATO_ORA, Ora);
         editor.putInt(STATO_MINUTO, Minuto);
 
@@ -659,10 +690,14 @@ public class MainActivity extends ActionBarActivity {
         editor.commit();
     }
 
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+
+        // Recupero lo stato dell'allarme impostato dalle shared prefs
+        // allarmeImpostato=savedInstanceState.getBoolean(STATO_ALLARME,false);
+        SharedPreferences sp = getSharedPreferences(PREFS_NAME,0);
+        allarmeImpostato=sp.getBoolean(STATO_ALLARME,false);
 
         // Recupero l'ora e minuto salvati e lo stato dell'array dei profili da savedInstanceState
         Ora=savedInstanceState.getInt(STATO_ORA);
@@ -680,7 +715,7 @@ public class MainActivity extends ActionBarActivity {
 
         try {
             calIn.setTime(sdf.parse(dataAggiornamento));
-        }catch(Exception e) {
+        } catch(Exception e) {
             calIn = Calendar.getInstance();
         }
 
@@ -691,25 +726,28 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
 
-        outState.putBoolean(SET_BUTTON, setOraIngresso.isEnabled());
-        outState.putBoolean(UPDATE_BUTTON, updateOraIngresso.isEnabled());
-        outState.putBoolean(ANNULLA_BUTTON, annullaUpdateOraIngresso.isEnabled());
-
-        outState.putInt(STATO_ORA, Ora);
-        outState.putInt(STATO_MINUTO, Minuto);
-
-        outState.putIntArray(STATO_PROFILO_ORA_ARRAY, profiloOraGiorno);
-        outState.putIntArray(STATO_PROFILO_MINUTO_ARRAY, profiloMinutoGiorno);
-        outState.putString(STATO_DATA_AGGIORNAMENTO, dataAggiornamento);
-
-        // TODO: Usi futuri
-        // TODO: vedere come impostare e salvare lo stato allarme. possibile problema: quando l'allarme è impostato, l'app è cancellata, l'allarme suona, l'app potrebbe riprendere uno stato
-        // inconsistente con quello dell'allarme vero (allarme non suonato per l'app, suonato l'allarme)
+        allarmeImpostato=intent.getBooleanExtra(STATO_ALLARME,false);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // imposto lo stato dell'allarme
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        allarmeImpostato=settings.getBoolean(STATO_ALLARME, false);
+
+        ImageView imageView = (ImageView) findViewById(R.id.allarmeImpostato);
+
+        if (!allarmeImpostato)
+            imageView.setVisibility(View.INVISIBLE);
+        else
+            imageView.setVisibility(View.VISIBLE);
+
+    }
     public void showTimePickerDialog(View v) {
         TimePickerDialog mTimePicker;
 
@@ -718,6 +756,10 @@ public class MainActivity extends ActionBarActivity {
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
                 if (timePickerChoseTime) {
+                    // Se clicco su Salva allora imposto tutto al giorno attuale
+                    calIn=Calendar.getInstance();
+                    calOut=Calendar.getInstance();
+
                     calIn.set(Calendar.HOUR_OF_DAY, selectedHour);
                     calIn.set(Calendar.MINUTE, selectedMinute);
                     calOut.set(Calendar.HOUR_OF_DAY, selectedHour);

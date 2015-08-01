@@ -17,6 +17,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
     private static int Ora=8,Minuto=0;
     private static int oraProfilo=7, minutoProfilo=42;
     private static final int oraBuonoPasto=6, minutoBuonoPasto=31;
+    private static boolean allarmeImpostato=false;
 
     private static String dataAggiornamento;
 
@@ -42,6 +45,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
     private static final String STATO_ORA_PROFILO ="ORA_PROFILO";
     private static final String STATO_MINUTO_PROFILO ="MINUTO_PROFILO";
     private static final String STATO_DATA_AGGIORNAMENTO= "STATO_DATA_AGGIORNAMENTO"; // Per ora la uso solo per aggiornare le label
+    private static final String STATO_ALLARME= "STATO_ALLARME";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -141,13 +145,23 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
             // When we click the widget, we want to open our main activity.
             Intent launchActivity = new Intent(context,MainActivity.class);
 
-            // Imposto i flag per evitare di aprire nuovamente l'attività: mi serve di riaprirnw solo una
+            // Imposto i flag per evitare di aprire nuovamente l'attività: mi serve di riaprirne solo una
             launchActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             // Imposto l'intent per lanciare la main activity
             PendingIntent pendingIntent = PendingIntent.getActivity(context,R.integer.intentMainActivity, launchActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
             remoteViews.setOnClickPendingIntent(R.id.calcola_ora_uscitaWDG, pendingIntent);
+        }
+
+        // Imposto l'icona dell'allarme
+        Log.e("AllarmeImpostato",(allarmeImpostato?"SI":"NO"));
+        if (allarmeImpostato) {
+            remoteViews.setViewVisibility(R.id.allarmeImpostato,View.VISIBLE);
+            //remoteViews.setImageViewResource(R.id.allarmeImpostato, R.drawable.ic_alarm_white_18dp);
+        }else {
+            remoteViews.setViewVisibility(R.id.allarmeImpostato,View.INVISIBLE);
+            //remoteViews.setImageViewResource(R.id.allarmeImpostato, R.drawable.ic_alarm_black_18dp);
         }
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -177,6 +191,8 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         // Recupero i parametri dell'ora di ingresso oppure dalle shared prefs
         if (intent.hasExtra(s)) {
             // TODO : Attenzione constanti cablate!
+            Log.e("INTENT","SI");
+            allarmeImpostato=intent.getBooleanExtra(STATO_ALLARME,false);
             Ora = intent.getIntExtra(s, 8);
             Minuto = intent.getIntExtra(context.getString(R.string.MINUTO_INGRESSO_WIDGET), 0);
             oraProfilo=intent.getIntExtra(STATO_ORA_PROFILO,7);
@@ -192,6 +208,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         Resources res= context.getResources();
         // Restore preferences
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+        allarmeImpostato=settings.getBoolean(STATO_ALLARME,false);
         Ora = settings.getInt(STATO_ORA, 8);
         Minuto = settings.getInt(STATO_MINUTO, 0);
         oraProfilo=settings.getInt(STATO_ORA_PROFILO, 7);

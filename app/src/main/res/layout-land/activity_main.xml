@@ -387,18 +387,19 @@
         android:enabled="true"
         android:singleLine="true"
         android:onClick="showRingTonePicker"
-        android:layout_alignTop="@+id/textWelcomeString"
-        android:layout_alignLeft="@+id/progressBar"
-        android:layout_alignStart="@+id/progressBar" />
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/buttonTimePicker"
+        android:layout_alignEnd="@+id/buttonTimePicker" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Numero attività avviate"
         android:id="@+id/lblMainActivityIstanze"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/progressBar"
-        android:layout_alignEnd="@+id/progressBar" />
+        android:layout_alignBaseline="@+id/textWelcomeString"
+        android:layout_alignBottom="@+id/textWelcomeString"
+        android:layout_toLeftOf="@+id/buttonSetOraIngresso"
+        android:layout_toStartOf="@+id/buttonSetOraIngresso" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -452,5 +453,14 @@
         android:id="@+id/textView13"
         android:layout_below="@+id/linearLayout6"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/allarmeImpostato"
+        android:src="@drawable/ic_alarm_black_18dp"
+        android:layout_alignBottom="@+id/btnRingTone"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -29,8 +29,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     static final long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
 
+    public static final String PREFS_NAME = "CalcolaOraUscita";
+    public static final String STATO_ALLARME= "STATO_ALLARME";
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
 
 //        // TODO: Impostare il pattern nelle risorse
 //        // long[] pattern = this.getResources().getIntArray(R.array.NotificationVibrationPattern);
@@ -41,18 +45,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        }
 //        //long[] pattern = {250,1000,250,1000,250,1000,250,1000,250, 1000,250,1000,250,1000,250};
 
-        /*
-        TODO: rimando indietro che l'allarme è stato eseguito
-
-        Intent intent = new Intent(this, MainActivity.class);
-
-        intent.putExtra(getString(R.string.alarmIntentRingToneUri), uriRingTone);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getBaseContext(),
-                R.integer.AlarmRequestCode,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-*/
         // Messagio a schermo
         Toast.makeText(context, context.getString(R.string.NotificationAlarmExitToast), Toast.LENGTH_LONG).show();
 
@@ -62,11 +54,21 @@ public class AlarmReceiver extends BroadcastReceiver {
         try{
             uriRingTone=Uri.parse(s);
         } catch (Exception e){
-         // Impostare un ringtone di default
-         // uriRingTone="";
+            // Impostare un ringtone di default
+            // uriRingTone="";
         }
 
+        // Dico all'app che l'allarme è suonato
+        SharedPreferences sp = context.getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor ed = sp.edit();
+
+       // ed.remove(STATO_ALLARME);
+        ed.putBoolean(STATO_ALLARME,false);
+        ed.commit();
+
         Intent mainActivityIntent = new Intent(context,MainActivity.class);
+        // L'allarme è suonato
+        mainActivityIntent.putExtra(STATO_ALLARME,false);
 /*
         // Preservo la navigazione tra le activity (vedi http://developer.android.com/guide/topics/ui/notifiers/notifications.html#HandlingNotifications)
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -74,10 +76,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntent(mainActivityIntent);
         PendingIntent notifyPIntent = stackBuilder.getPendingIntent(R.integer.intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 */
+
         // Se clicco sulla notifica la faccio solo sparire
         PendingIntent notifyPIntent =
-                PendingIntent.getActivity(context.getApplicationContext(), R.integer.intentMainActivity, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
-
+                PendingIntent.getActivity(context.getApplicationContext(), R.integer.intentMainActivity, mainActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         myNotification = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle))
@@ -87,7 +89,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                // .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE|Notification.FLAG_SHOW_LIGHTS)
                 .setDefaults(Notification.FLAG_SHOW_LIGHTS)
                 .setAutoCancel(true)
-                .setLights(Color.BLUE, 1500, 500)
+                .setLights(Color.BLUE|Color.YELLOW, 1500, 500)
                 .setSmallIcon(R.drawable.ic_launch_white_18dp)
                 .setVibrate(pattern)
                 .setOnlyAlertOnce(false)
@@ -95,24 +97,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setContentIntent(notifyPIntent)    // Main activity come activity richiamata al click (???)
                 .build();
-
-
-        // Dico all'app che l'allarme è suonato
-        // TODO: verificare se funziona
-        // TODO: completare leggendo il valore nella main activity
-        SharedPreferences sp = context.getSharedPreferences(MainActivity.PREFS_NAME, 0);
-        SharedPreferences.Editor ed = sp.edit();
-
-        // TODO: Usi futuri
-        // ed.putBoolean(MainActivity.STATO_ALLARME, false);
-
-        ed.commit();
-
-/*
-        myNotification.ledARGB=0xff0000ff;;
-        myNotification.ledOnMS=500;
-        myNotification.ledOffMS=500;
-*/
 
         notificationManager =
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -122,7 +106,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 + "Alarm is raised \n"
                 + "***\n");
 
-    }
+        // Invio un broadcast ai widget con i valori aggiornati di ora e minuto ingresso
+        Intent intentWidget = new Intent(context, CalcolaOraUscitaWidget.class);
+        intentWidget.putExtra(STATO_ALLARME,false);
 
+        context.sendBroadcast(intentWidget);
+    }
 
 }
