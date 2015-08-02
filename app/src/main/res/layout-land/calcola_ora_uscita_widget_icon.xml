@@ -32,14 +32,27 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true">
 
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:id="@+id/uscitaShadow"
+                    android:src="@drawable/ic_launch_black_36dp"
+                    android:layout_alignLeft="@+id/uscitaNormalLayout"
+                    android:layout_alignStart="@+id/uscitaNormalLayout"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="1dp" />
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/linearLayout5"
+                    android:id="@+id/uscitaNormalLayout"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
 
                     <ImageView
                         android:layout_width="36dp"
@@ -65,9 +78,25 @@
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
                         android:textIsSelectable="false"
-                        android:paddingTop="@dimen/margin_tiny" />
+                        android:paddingTop="@dimen/margin_tiny"
+                        android:shadowColor="#FF000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
 
                 </LinearLayout>
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:id="@+id/ingressoShadow"
+                    android:src="@drawable/ic_exit_to_app_black_36dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignLeft="@+id/normalIngressoLayout"
+                    android:layout_alignStart="@+id/normalIngressoLayout"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="1dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -75,12 +104,14 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true">
+                    android:layout_alignParentEnd="false"
+                    android:id="@+id/normalIngressoLayout"
+                    android:layout_alignParentStart="true">
 
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:id="@+id/imageView"
+                        android:id="@+id/ingressoNormal"
                         android:src="@drawable/ic_exit_to_app_white_36dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
@@ -99,11 +130,17 @@
                         android:background="@android:color/transparent"
                         android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
                         android:layout_alignParentTop="true"
-                        android:layout_toRightOf="@+id/imageView"
+                        android:layout_toRightOf="@+id/ingressoNormal"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/imageView"
-                        android:paddingTop="@dimen/margin_tiny" />
+                        android:layout_toEndOf="@+id/ingressoNormal"
+                        android:paddingTop="@dimen/margin_tiny"
+                        android:shadowColor="#FF000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
                 </LinearLayout>
+
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -126,15 +163,27 @@
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentStart="false"
-                    android:layout_toStartOf="@+id/allarmeImpostato" />
+                    android:layout_toStartOf="@+id/allarmeImpostatoShadow"
+                    android:layout_toLeftOf="@+id/allarmeImpostatoShadow" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:id="@+id/allarmeImpostatoShadow"
+                    android:src="@drawable/ic_alarm_black_18dp"
+                    android:layout_toLeftOf="@+id/textView9"
+                    android:layout_toStartOf="@+id/textView9"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="1dp" />
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:id="@+id/allarmeImpostato"
                     android:src="@drawable/ic_alarm_white_18dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+
+                    android:layout_toLeftOf="@+id/textView9"
+                    android:layout_toStartOf="@+id/textView9" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -146,7 +195,11 @@
                     android:paddingRight="@dimen/margin_small"
                     android:layout_alignParentTop="true"
                     android:layout_toLeftOf="@+id/dataAggiornamento"
-                    android:layout_toStartOf="@+id/dataAggiornamento" />
+                    android:layout_toStartOf="@+id/dataAggiornamento"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -157,15 +210,28 @@
                     android:textColor="@android:color/white"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1" />
 
             </RelativeLayout>
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:id="@+id/shadowBP"
+                android:src="@drawable/ic_description_black_36dp"
+                android:layout_alignLeft="@+id/normalBPLayout"
+                android:layout_alignStart="@+id/normalBPLayout"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="1dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/linearLayout7"
+                android:id="@+id/normalBPLayout"
                 android:layout_alignParentTop="false"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentEnd="false"
@@ -176,7 +242,7 @@
                     android:layout_height="36dp"
                     android:id="@+id/imageView3"
                     android:src="@drawable/ic_description_white_36dp"
-                    android:layout_alignTop="@+id/linearLayout5"
+                    android:layout_alignTop="@+id/uscitaNormalLayout"
                     android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
                     android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
 
@@ -194,7 +260,11 @@
                     android:layout_alignBottom="@+id/imageView3"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:paddingTop="@dimen/margin_tiny" />
+                    android:paddingTop="@dimen/margin_tiny"
+                    android:shadowColor="#FF000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1" />
             </LinearLayout>
 
         </RelativeLayout>

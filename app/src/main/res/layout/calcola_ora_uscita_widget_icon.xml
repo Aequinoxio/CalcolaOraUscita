@@ -34,6 +34,109 @@
 
                 <LinearLayout
                     android:orientation="horizontal"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:id="@+id/shadowBP"
+                    android:layout_alignLeft="@+id/linearLayout10"
+                    android:layout_alignStart="@+id/linearLayout10">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView5"
+                        android:src="@drawable/ic_description_black_36dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1dp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/linearLayout10"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentTop="false"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:id="@+id/imageView3"
+                            android:src="@drawable/ic_description_white_36dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
+                            android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
+
+                        <TextView
+                            android:id="@+id/OraBuonoPastoTXT"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/OraUscitaValueWidgetLBL"
+                            android:textColor="#ffffff"
+                            android:textSize="24sp"
+                            android:textStyle="bold|italic"
+                            android:contentDescription="@string/appwidget_text"
+                            android:background="@android:color/transparent"
+                            android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                            android:layout_alignBottom="@+id/imageView3"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
+                            android:elegantTextHeight="false"
+                            android:shadowColor="#FF000000"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:singleLine="true" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="@dimen/margin_large"
+                    android:layout_height="@dimen/margin_large"
+                    android:id="@+id/progressBar"
+                    android:indeterminate="false"
+                    android:background="@drawable/roundedrect"
+                    android:backgroundTint="@android:color/holo_red_light"
+                    android:progressDrawable="@drawable/circular"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/shadowIngresso"
+                    android:layout_alignParentStart="true">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView4"
+                        android:src="@drawable/ic_exit_to_app_black_36dp"
+                        android:layout_alignTop="@+id/ingressoNormal"
+                        android:layout_alignLeft="@+id/ingressoNormal"
+                        android:layout_alignStart="@+id/ingressoNormal"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -45,7 +148,7 @@
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:id="@+id/imageView"
+                        android:id="@+id/ingressoNormal"
                         android:src="@drawable/ic_exit_to_app_white_36dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
@@ -62,60 +165,18 @@
                         android:contentDescription="@string/appwidget_text"
                         android:background="@android:color/transparent"
                         android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                        android:layout_alignBottom="@+id/imageView"
-                        android:layout_toRightOf="@+id/imageView"
-                        android:layout_toEndOf="@+id/imageView"
-                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material" />
+                        android:layout_alignBottom="@+id/ingressoNormal"
+                        android:layout_toRightOf="@+id/ingressoNormal"
+                        android:layout_toEndOf="@+id/ingressoNormal"
+                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                        android:shadowColor="#FF000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_alignParentLeft="false"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="false"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true">
 
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:id="@+id/imageView3"
-                        android:src="@drawable/ic_description_white_36dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_toLeftOf="@+id/OraBuonoPastoTXT"
-                        android:layout_toStartOf="@+id/OraBuonoPastoTXT" />
-
-                    <TextView
-                        android:id="@+id/OraBuonoPastoTXT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/OraUscitaValueWidgetLBL"
-                        android:textColor="#ffffff"
-                        android:textSize="24sp"
-                        android:textStyle="bold|italic"
-                        android:contentDescription="@string/appwidget_text"
-                        android:background="@android:color/transparent"
-                        android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                        android:layout_alignBottom="@+id/imageView3"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true" />
-                </LinearLayout>
-
-                <ProgressBar
-                    style="@android:style/Widget.ProgressBar.Horizontal"
-                    android:layout_width="@dimen/margin_large"
-                    android:layout_height="@dimen/margin_large"
-                    android:id="@+id/progressBar"
-                    android:indeterminate="false"
-                    android:background="@drawable/roundedrect"
-                    android:backgroundTint="@android:color/holo_red_light"
-                    android:progressDrawable="@drawable/circular"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
 
             </RelativeLayout>
 
@@ -137,7 +198,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="false"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:id="@+id/shadowUscita">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView6"
+                        android:src="@drawable/ic_launch_black_36dp"
+                        android:layout_alignBottom="@+id/normalUscita"
+                        android:layout_toLeftOf="@+id/normalUscita"
+                        android:layout_toStartOf="@+id/normalUscita"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="1dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="false"
+                    android:gravity="center_vertical"
+                    android:id="@+id/normalUscita">
 
                     <ImageView
                         android:layout_width="36dp"
@@ -159,10 +242,14 @@
                         android:contentDescription="@string/appwidget_text"
                         android:background="@android:color/transparent"
                         android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
-                        android:layout_below="@+id/imageView"
+                        android:layout_below="@+id/ingressoNormal"
                         android:layout_alignLeft="@+id/OraIngressoTXT"
                         android:layout_alignStart="@+id/OraIngressoTXT"
-                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material" />
+                        android:paddingRight="@dimen/abc_action_bar_subtitle_bottom_margin_material"
+                        android:shadowColor="#FF000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -195,7 +282,11 @@
                             android:layout_alignRight="@+id/OraBuonoPastoTXT"
                             android:layout_alignEnd="@+id/OraBuonoPastoTXT"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="@dimen/margin_small" />
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:shadowColor="#FF000000"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -208,7 +299,11 @@
                             android:layout_below="@+id/textView8"
                             android:layout_alignRight="@+id/textView8"
                             android:layout_alignEnd="@+id/textView8"
-                            android:layout_gravity="center_horizontal" />
+                            android:layout_gravity="center_horizontal"
+                            android:shadowColor="#FF000000"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1" />
 
                     </LinearLayout>
 
@@ -217,11 +312,27 @@
                 <ImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
+                    android:id="@+id/allarmeImpostatoShadow"
+                    android:src="@drawable/ic_alarm_black_36dp"
+                    android:longClickable="false"
+                    android:layout_centerVertical="true"
+                    android:layout_alignLeft="@+id/allarmeImpostato"
+                    android:layout_alignStart="@+id/allarmeImpostato"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginTop="1dp" />
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:id="@+id/allarmeImpostato"
                     android:src="@drawable/ic_alarm_white_36dp"
                     android:longClickable="false"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:nestedScrollingEnabled="false" />
+
+
+
             </RelativeLayout>
 
         </RelativeLayout>

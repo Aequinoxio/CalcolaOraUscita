@@ -41,9 +41,9 @@
             android:contentDescription="@string/appwidget_text"
             android:background="@android:color/transparent"
             android:paddingLeft="@dimen/abc_action_bar_navigation_padding_start_material"
-            android:layout_centerInParent="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView"
-            android:layout_toEndOf="@+id/imageView" />
+            android:layout_centerInParent="@+id/ingressoNormal"
+            android:layout_toRightOf="@+id/ingressoNormal"
+            android:layout_toEndOf="@+id/ingressoNormal" />
 
         <TextView
             android:id="@+id/OraBuonoPastoTXT"
@@ -63,7 +63,7 @@
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:id="@+id/imageView"
+            android:id="@+id/ingressoNormal"
             android:src="@drawable/ic_exit_to_app_white_18dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"

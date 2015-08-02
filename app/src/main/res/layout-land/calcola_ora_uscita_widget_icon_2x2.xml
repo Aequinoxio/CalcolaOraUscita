@@ -40,9 +40,9 @@
             android:background="@android:color/transparent"
             android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
             android:textSize="32sp"
-            android:layout_alignTop="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView"
-            android:layout_toEndOf="@+id/imageView"
+            android:layout_alignTop="@+id/ingressoNormal"
+            android:layout_toRightOf="@+id/ingressoNormal"
+            android:layout_toEndOf="@+id/ingressoNormal"
             android:layout_marginTop="5dp" />
 
         <TextView
@@ -64,7 +64,7 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/imageView"
+            android:id="@+id/ingressoNormal"
             android:src="@drawable/ic_exit_to_app_white_48dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"

@@ -370,7 +370,7 @@
                 android:text="@string/buttonAnnulla"
                 android:id="@+id/buttonAnnulla"
                 android:enabled="false"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:layout_alignBaseline="@+id/buttonSetOraIngresso"
                 android:layout_alignBottom="@+id/buttonSetOraIngresso"
                 android:layout_alignParentLeft="true"
@@ -393,7 +393,7 @@
                 android:id="@+id/buttonTimePicker"
                 android:onClick="showTimePickerDialog"
                 android:enabled="true"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:layout_alignTop="@+id/buttonSetOraIngresso"
                 android:layout_toRightOf="@+id/textWelcomeString"
                 android:layout_toEndOf="@+id/textWelcomeString"
@@ -410,7 +410,7 @@
         android:id="@+id/btnNotifica"
         android:onClick="showNotification"
         android:layout_column="5"
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -420,7 +420,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/weekendLoader"
-        android:id="@+id/textView12"
+        android:id="@+id/caricatoreWeekend"
         android:layout_alignTop="@+id/progressBar"
         android:layout_centerHorizontal="true" />
 

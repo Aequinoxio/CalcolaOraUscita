@@ -453,16 +453,18 @@ public class MainActivity extends ActionBarActivity {
         // TODO: attenzione costante 5 giorni lavorativi cablata
         ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setMax(5);
-        //testo = (TextView) findViewById(R.id.workDayLBL);
+        testo = (TextView) findViewById(R.id.caricatoreWeekend);
         if (weekend) {
             //testo.setBackgroundResource(R.drawable.roundedrect_green);
             //pb.setBackgroundResource(R.drawable.roundedrect_green);
             pb.setProgress(5);
+            testo.setText(getString(R.string.weekendCaricato));
         } else {
             //testo.setBackgroundResource(R.drawable.roundedrect_red);
             //pb.setBackgroundResource(R.drawable.roundedrect_red);
             pb.setSecondaryProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
             pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-2);
+            testo.setText(getString(R.string.weekendIsLoading));
         }
 
         profiloOra=profiloOraGiorno[giornoSettimana];

@@ -158,9 +158,11 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         Log.e("AllarmeImpostato",(allarmeImpostato?"SI":"NO"));
         if (allarmeImpostato) {
             remoteViews.setViewVisibility(R.id.allarmeImpostato,View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.allarmeImpostatoShadow,View.VISIBLE);
             //remoteViews.setImageViewResource(R.id.allarmeImpostato, R.drawable.ic_alarm_white_18dp);
         }else {
             remoteViews.setViewVisibility(R.id.allarmeImpostato,View.INVISIBLE);
+            remoteViews.setViewVisibility(R.id.allarmeImpostatoShadow,View.INVISIBLE);
             //remoteViews.setImageViewResource(R.id.allarmeImpostato, R.drawable.ic_alarm_black_18dp);
         }
 

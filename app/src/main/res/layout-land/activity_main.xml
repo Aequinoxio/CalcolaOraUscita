@@ -19,8 +19,8 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:id="@+id/linearLayout9"
+        android:layout_above="@+id/mostraDatiLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/DataOraOdiernaLinearLayout"
@@ -43,7 +43,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tableLayout"
-            android:layout_above="@+id/linearLayout"
+            android:layout_above="@+id/mostraDatiLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="@dimen/margin_medium"
@@ -209,10 +209,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:id="@+id/linearLayout"
-        android:layout_above="@+id/buttonSetOraIngresso"
+        android:id="@+id/mostraDatiLayout"
+        android:layout_above="@+id/linearLayout5"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/DataOraOdiernaLinearLayout"
+        android:layout_toStartOf="@+id/DataOraOdiernaLinearLayout"
+        android:animationCache="true">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -243,7 +246,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Buono Pasto"
+                android:text="Buono pasto"
                 android:id="@+id/textView5"
                 android:layout_below="@+id/ProfiloOrariolinearLayout"
                 android:layout_alignRight="@+id/ProfiloOrariolinearLayout"
@@ -291,50 +294,6 @@
                 android:text="@string/OraIngressoValueWidgetLBL" />
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setOraIngresso"
-        android:id="@+id/buttonSetOraIngresso"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/buttonAnnulla"
-        android:layout_toEndOf="@+id/buttonAnnulla" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/updateOraIngresso"
-        android:id="@+id/buttonUpdateOraIngresso"
-        android:clickable="true"
-        android:checked="false"
-        android:layout_below="@+id/linearLayout"
-        android:layout_toRightOf="@+id/buttonTimePicker"
-        android:layout_toEndOf="@+id/buttonTimePicker" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buttonAnnulla"
-        android:id="@+id/buttonAnnulla"
-        android:enabled="false"
-        android:layout_gravity="right"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buttonTimePicker"
-        android:id="@+id/buttonTimePicker"
-        android:onClick="showTimePickerDialog"
-        android:enabled="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/buttonSetOraIngresso"
-        android:layout_toEndOf="@+id/buttonSetOraIngresso" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -387,9 +346,9 @@
         android:enabled="true"
         android:singleLine="true"
         android:onClick="showRingTonePicker"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/buttonTimePicker"
-        android:layout_alignEnd="@+id/buttonTimePicker" />
+        android:layout_above="@+id/linearLayout9"
+        android:layout_alignRight="@+id/linearLayout6"
+        android:layout_alignEnd="@+id/linearLayout6" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -398,28 +357,25 @@
         android:id="@+id/lblMainActivityIstanze"
         android:layout_alignBaseline="@+id/textWelcomeString"
         android:layout_alignBottom="@+id/textWelcomeString"
-        android:layout_toLeftOf="@+id/buttonSetOraIngresso"
-        android:layout_toStartOf="@+id/buttonSetOraIngresso" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnNotification"
-        android:id="@+id/btnNotifica"
-        android:onClick="showNotification"
-        android:layout_below="@+id/linearLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:background="@android:drawable/dialog_holo_light_frame" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/DataOraOdiernaLinearLayout"
-        android:layout_alignBottom="@+id/linearLayout"
+        android:layout_alignBottom="@+id/mostraDatiLayout"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:background="@android:drawable/dialog_holo_light_frame">
+
+        <AnalogClock
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/analogClock2"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -434,15 +390,6 @@
             android:layout_alignBottom="@+id/analogClock2"
             android:layout_gravity="center_horizontal" />
 
-        <AnalogClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/analogClock2"
-            android:layout_weight="0.10"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
     </LinearLayout>
 
     <TextView
@@ -450,7 +397,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/weekendLoader"
-        android:id="@+id/textView13"
+        android:id="@+id/caricatoreWeekend"
         android:layout_below="@+id/linearLayout6"
         android:layout_centerHorizontal="true" />
 
@@ -459,8 +406,63 @@
         android:layout_height="wrap_content"
         android:id="@+id/allarmeImpostato"
         android:src="@drawable/ic_alarm_black_18dp"
-        android:layout_alignBottom="@+id/btnRingTone"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout5"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/DataOraOdiernaLinearLayout"
+        android:layout_alignEnd="@+id/DataOraOdiernaLinearLayout"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setOraIngresso"
+            android:id="@+id/buttonSetOraIngresso"
+            android:textAllCaps="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/updateOraIngresso"
+            android:id="@+id/buttonUpdateOraIngresso"
+            android:clickable="true"
+            android:checked="false"
+            android:textAllCaps="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonAnnulla"
+            android:id="@+id/buttonAnnulla"
+            android:enabled="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonTimePicker"
+            android:id="@+id/buttonTimePicker"
+            android:onClick="showTimePickerDialog"
+            android:enabled="true"
+            android:textAllCaps="true" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnNotification"
+        android:id="@+id/btnNotifica"
+        android:onClick="showNotification"
+        android:layout_above="@+id/linearLayout9"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

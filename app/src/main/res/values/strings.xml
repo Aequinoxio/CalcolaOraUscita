@@ -69,4 +69,7 @@
     <string name="timePickerAccept">Ok</string>
     <string name="weekendLoader">Caricatore di weekend</string>
 
+    <string name="weekendCaricato">Weekend correttamente caricato</string>
+    <string name="weekendIsLoading">Weekend in fase di caricamento</string>
+
 </resources>
