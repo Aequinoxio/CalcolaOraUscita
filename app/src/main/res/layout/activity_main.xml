@@ -275,7 +275,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Buono Pasto"
+        android:text="Buono pasto"
         android:id="@+id/textView"
         android:layout_below="@+id/ProfiloOrariolinearLayout"
         android:layout_alignRight="@+id/ProfiloOrariolinearLayout"
@@ -365,12 +365,12 @@
             android:layout_height="match_parent">
 
             <Button
-                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/buttonAnnulla"
                 android:id="@+id/buttonAnnulla"
                 android:enabled="false"
+                android:textAllCaps="false"
                 android:layout_alignBaseline="@+id/buttonSetOraIngresso"
                 android:layout_alignBottom="@+id/buttonSetOraIngresso"
                 android:layout_alignParentLeft="true"
@@ -387,13 +387,13 @@
                 android:layout_column="2" />
 
             <Button
-                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/buttonTimePicker"
                 android:id="@+id/buttonTimePicker"
                 android:onClick="showTimePickerDialog"
                 android:enabled="true"
+                android:textAllCaps="false"
                 android:layout_alignTop="@+id/buttonSetOraIngresso"
                 android:layout_toRightOf="@+id/textWelcomeString"
                 android:layout_toEndOf="@+id/textWelcomeString"
@@ -408,9 +408,9 @@
         android:layout_height="wrap_content"
         android:text="@string/btnNotification"
         android:id="@+id/btnNotifica"
-        style="?android:attr/buttonStyleSmall"
         android:onClick="showNotification"
         android:layout_column="5"
+        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -430,7 +430,7 @@
         android:id="@+id/allarmeImpostato"
         android:src="@drawable/ic_alarm_black_18dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignRight="@+id/progressBar"
+        android:layout_alignEnd="@+id/progressBar" />
 
 </RelativeLayout>

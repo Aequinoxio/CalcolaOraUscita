@@ -8,8 +8,8 @@
     <string name="setOraIngresso">Adesso!</string>
     <string name="Label1">Large Text</string>
     <string name="updateOraIngresso">Imposta ora ingresso</string>
-    <string name="buttonAnnulla"><![CDATA[<]]></string>
-    <string name="buttonTimePicker">+</string>
+    <string name="buttonAnnulla">Annulla</string>
+    <string name="buttonTimePicker">Scegli l\'ora</string>
     <string name="action_about">Informazioni</string>
     <string name="Autore">Gabriele Galluzzo</string>
 
@@ -17,7 +17,7 @@
     <string name="TODO_MSG">Non ancora implementato</string>
     <string name="TODO_MSG2">Il valore per il calcolo dell\'ora di uscita è fissato a 7:42 per tutti i giorni</string>
 
-    <string name="TIME_PICKER_TITLE">Imposta ora</string>
+    <string name="TIME_PICKER_TITLE">Scegli l\'ora</string>
 
     <string name="appwidget_text">Ora ingresso     </string>
     <string name="add_widget">Aggiungi widget</string>
