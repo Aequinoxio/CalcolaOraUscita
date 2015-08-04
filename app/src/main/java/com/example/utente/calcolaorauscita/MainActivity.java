@@ -6,6 +6,7 @@ import java.util.*;
 
 import android.app.AlertDialog;
 
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -148,6 +149,16 @@ public class MainActivity extends ActionBarActivity {
             TextView t = (TextView) findViewById(R.id.lblMainActivityIstanze);
             t.setVisibility(View.GONE);
         }
+
+        // Alloco il notification manger se non l'ho già fatto
+        if(notificationManager==null){
+            notificationManager =
+                    (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        // Alloco il notification builder se non l'ho già fatto
+        if (myNotificationBuilder==null)
+            myNotificationBuilder=new NotificationCompat.Builder(this);
 
         // alloco 5 interi per ore e minuti che costituiscono il profilo orario giornaliero
         // + 2 per sabato e domenica che per ora non modifico
@@ -315,7 +326,7 @@ public class MainActivity extends ActionBarActivity {
         // Invio il broadcast
         Intent intent = new Intent(this, AlarmReceiver.class);
 
-        intent.putExtra(getString(R.string.alarmIntentRingToneUri), uriRingTone);
+        intent.putExtra(getString(R.string.alarmIntentRingToneUri), uriRingTone.toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getBaseContext(),
                 R.integer.AlarmRequestCode,
@@ -324,6 +335,14 @@ public class MainActivity extends ActionBarActivity {
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+
+        // Imposto il flag per il bootReceiver
+        ComponentName receiver = new ComponentName(getApplicationContext(),BootBroadcastReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
 
         // Visualizzo un messaggio come feedback
         Toast myToast = Toast.makeText(MainActivity.this,
@@ -336,6 +355,82 @@ public class MainActivity extends ActionBarActivity {
         myToast.show();
 
         setNotification();
+    }
+
+    /**
+     * se clicco sull'icona dell'allarme lo cancello
+     * @param v
+     */
+    public void cancelAlarm(View v) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        cancelAlarm();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(getString(R.string.alarmCancelYesNoDialog))
+                .setPositiveButton(getString(R.string.dialogYesButton), dialogClickListener)
+                .setNegativeButton(getString(R.string.dialogNoButton), dialogClickListener)
+                .setIcon(R.drawable.ic_launch_black_24dp)
+                .setTitle(getString(R.string.app_name))
+                .show();
+
+    }
+
+    /**
+     * faccio qui il lavoro di cancellazione dell'allarme
+     */
+    private void cancelAlarm(){
+        Intent intent=new Intent(this, AlarmReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getBaseContext(),
+                R.integer.AlarmRequestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+        // Aggiorno i valori
+        allarmeImpostato=false;
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME,0);
+        SharedPreferences.Editor ed = sharedPreferences.edit();
+        ed.putBoolean(STATO_ALLARME,false);
+        ed.commit();
+
+        // Rimuovo l'icona dell'allarme
+        ImageView imageView = (ImageView) findViewById(R.id.allarmeImpostato);
+        imageView.setVisibility(View.INVISIBLE);
+
+        /*
+        // Rimuovo la notifica se l'ho già impostata
+        if (notificationManager != null)
+            notificationManager.cancel(R.integer.MY_NOTIFICATION_ID);
+*/
+
+        notificationManager.cancel(R.integer.MY_NOTIFICATION_ID);
+
+        // Imposto il flag per disarrivare il bootReceiver
+        ComponentName receiver = new ComponentName(this,BootBroadcastReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
     private void setNotification(){
         Context context= getBaseContext();
@@ -360,10 +455,6 @@ public class MainActivity extends ActionBarActivity {
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(mainActivityIntent);
         PendingIntent notifyPIntent = stackBuilder.getPendingIntent(R.integer.intentMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        if (myNotificationBuilder==null)
-            myNotificationBuilder=new NotificationCompat.Builder(context);
 
         myNotification = myNotificationBuilder
             .setContentTitle(context.getString(R.string.NotificationAlarmExitTitle)
@@ -400,8 +491,6 @@ public class MainActivity extends ActionBarActivity {
 //      myNotification.ledOnMS=500;
 //      myNotification.ledOffMS=500;
 
-        notificationManager =
-                (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
     }
     protected void aggiornaValori(){
@@ -815,6 +904,7 @@ public class MainActivity extends ActionBarActivity {
     public void showNotification(View v) {
         setNotification();
     }
+
     public void showTimePickerDialogProfilo(View v) {
         TimePickerDialog mTimePicker;
 

@@ -72,4 +72,7 @@
     <string name="weekendCaricato">Weekend correttamente caricato</string>
     <string name="weekendIsLoading">Weekend in fase di caricamento</string>
 
+    <string name="alarmCancelYesNoDialog">Cancello l\'allarme impostato?</string>
+    <string name="dialogYesButton">Si</string>
+    <string name="dialogNoButton">No</string>
 </resources>

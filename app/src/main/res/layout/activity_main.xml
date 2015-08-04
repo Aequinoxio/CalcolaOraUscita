@@ -431,6 +431,8 @@
         android:src="@drawable/ic_alarm_black_18dp"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/progressBar"
-        android:layout_alignEnd="@+id/progressBar" />
+        android:layout_alignEnd="@+id/progressBar"
+        android:clickable="true"
+        android:onClick="cancelAlarm" />
 
 </RelativeLayout>
