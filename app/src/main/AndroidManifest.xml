@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.utente.calcolaorauscita" >
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
-
+        android:name="CalcolaOraUscitaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -12,8 +14,6 @@
 
         <!-- richiedo questo permesso per cancellare il valore dell'allarme impostato nella shared prefs in caso di reboot
              del cellulare -->
-
-
 
         <activity
             android:launchMode="singleInstance"

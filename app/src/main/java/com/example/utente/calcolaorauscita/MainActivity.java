@@ -31,25 +31,25 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static class TimePickerFragment1 extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
-        }
-    }
+//    public static class TimePickerFragment1 extends DialogFragment
+//            implements TimePickerDialog.OnTimeSetListener {
+//
+//        @Override
+//        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            // Use the current time as the default values for the picker
+//            final Calendar c = Calendar.getInstance();
+//            int hour = c.get(Calendar.HOUR_OF_DAY);
+//            int minute = c.get(Calendar.MINUTE);
+//
+//            // Create a new instance of TimePickerDialog and return it
+//            return new TimePickerDialog(getActivity(), this, hour, minute,
+//                    DateFormat.is24HourFormat(getActivity()));
+//        }
+//
+//        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//            // Do something with the time chosen by the user
+//        }
+//    }
 
     ////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
     private static int istanzeMainActivity=0;
 
     // Workaround per evitare che anche con l'annulla il metodo onTimeSet imposti il valore dell'ora
-    private  boolean timePickerChoseTime=false;
+    private boolean timePickerChoseTime;
 
     // Variabili per ripristinare i valori usando la shared prefs
     public static final String PREFS_NAME = "CalcolaOraUscita";
@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
     Button setOraIngresso;
     Button updateOraIngresso;
     Button annullaUpdateOraIngresso;
-    Button timePicker;
+    Button timePickerBtn;
 
     protected Calendar calIn;
     protected Calendar calOut;
@@ -168,12 +168,12 @@ public class MainActivity extends ActionBarActivity {
         setOraIngresso = (Button) findViewById(R.id.buttonSetOraIngresso);
         updateOraIngresso = (Button) findViewById(R.id.buttonUpdateOraIngresso);
         annullaUpdateOraIngresso=(Button) findViewById(R.id.buttonAnnulla);
-        timePicker=(Button) findViewById(R.id.buttonTimePicker);
+        timePickerBtn=(Button) findViewById(R.id.buttonTimePicker);
 
         setOraIngresso.setEnabled(true);
         updateOraIngresso.setEnabled(false);
         annullaUpdateOraIngresso.setEnabled(false);
-        timePicker.setEnabled(true);
+        timePickerBtn.setEnabled(true);
 
         // Imposto le variabili core
         calIn = Calendar.getInstance();
@@ -284,7 +284,7 @@ public class MainActivity extends ActionBarActivity {
                         setOraIngresso.setEnabled(true);
                         updateOraIngresso.setEnabled(false);
                         annullaUpdateOraIngresso.setEnabled(true);
-                        timePicker.setEnabled(true);
+                        timePickerBtn.setEnabled(true);
                     }
                 }
         );
@@ -295,7 +295,7 @@ public class MainActivity extends ActionBarActivity {
                         setOraIngresso.setEnabled(false);
                         updateOraIngresso.setEnabled(true);
                         annullaUpdateOraIngresso.setEnabled(false);
-                        timePicker.setEnabled(false);
+                        timePickerBtn.setEnabled(false);
                     }
                 }
         );
@@ -626,7 +626,7 @@ public class MainActivity extends ActionBarActivity {
         setOraIngresso.setEnabled(false);
         updateOraIngresso.setEnabled(true);
         annullaUpdateOraIngresso.setEnabled(false);
-        timePicker.setEnabled(false);
+        timePickerBtn.setEnabled(false);
 
         ImageView imageView = (ImageView) findViewById(R.id.allarmeImpostato);
 
@@ -837,63 +837,130 @@ public class MainActivity extends ActionBarActivity {
             imageView.setVisibility(View.INVISIBLE);
         else
             imageView.setVisibility(View.VISIBLE);
-
     }
+
+    /**
+     * Mostra la dialog per la scelta dell'ora.
+     * Workaround per il fatto che onTimeSet viene chiamato in kitkat e ma non in lollipop
+     * se imposto i pulsanti ok e annulla
+     * (vedi http://stackoverflow.com/questions/15165328/timepickerdialog-ontimesetlistener-not-called)
+     *
+     * @param v
+     */
     public void showTimePickerDialog(View v) {
-        TimePickerDialog mTimePicker;
+        final TimePicker timePicker = new TimePicker(this);
+        timePicker.setIs24HourView(true);
+        timePicker.setCurrentHour(Ora);
+        timePicker.setCurrentMinute(Minuto);
 
-        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.TIME_PICKER_TITLE))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-                if (timePickerChoseTime) {
-                    // Se clicco su Salva allora imposto tutto al giorno attuale
-                    calIn=Calendar.getInstance();
-                    calOut=Calendar.getInstance();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("Picker", timePicker.getCurrentHour() + ":"
+                                + timePicker.getCurrentMinute());
 
-                    calIn.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    calIn.set(Calendar.MINUTE, selectedMinute);
-                    calOut.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    calOut.set(Calendar.MINUTE, selectedMinute);
+                        calIn=Calendar.getInstance();
+                        calOut=Calendar.getInstance();
 
-                    Ora = selectedHour;
-                    Minuto = selectedMinute;
-                    aggiornaValori();
+                        Ora = timePicker.getCurrentHour();
+                        Minuto = timePicker.getCurrentMinute();
 
-                    setAlarm(calOut);
-                }
-            }
-        }, Ora, Minuto, true);//Yes 24 hour time
+                        calIn.set(Calendar.HOUR_OF_DAY, Ora);
+                        calIn.set(Calendar.MINUTE, Minuto);
+                        calOut.set(Calendar.HOUR_OF_DAY, Ora);
+                        calOut.set(Calendar.MINUTE, Minuto);
 
-        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,getString(R.string.timePickerCancel),new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == DialogInterface.BUTTON_NEGATIVE) {
-                    timePickerChoseTime=false;
-                   // Log.v("","Annullato il timepicker");
-                }
-            }
-        });
+                        allarmeImpostato=true;
 
-        mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE,getString(R.string.timePickerAccept),new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    timePickerChoseTime=true;
-                    // Log.v("","Impostato il timepicker");
-                }
-            }
-        });
+                        aggiornaValori();
+                        setAlarm(calOut);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel,
+                        new DialogInterface.OnClickListener() {
 
-        mTimePicker.setOnDismissListener(new Dialog.OnDismissListener() {
-            public void onDismiss(DialogInterface dialog) {
-                timePickerChoseTime=false;
-                // Non faccio nulla
-            }
-        });
-
-        mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
-
-        mTimePicker.show();
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Log.d("Picker", "Cancelled!");
+                            }
+                        }).setView(timePicker).show();
     }
+
+//    public void showTimePickerDialog(View v) {
+//        TimePickerDialog mTimePicker;
+//        timePickerChoseTime=true;
+//        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+//
+//            @Override
+//            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+//
+//            if (timePickerChoseTime) {
+//                // Se clicco su Salva allora imposto tutto al giorno attuale
+//                calIn=Calendar.getInstance();
+//                calOut=Calendar.getInstance();
+//
+//                calIn.set(Calendar.HOUR_OF_DAY, selectedHour);
+//                calIn.set(Calendar.MINUTE, selectedMinute);
+//                calOut.set(Calendar.HOUR_OF_DAY, selectedHour);
+//                calOut.set(Calendar.MINUTE, selectedMinute);
+//
+//                Ora = selectedHour;
+//                Minuto = selectedMinute;
+//                aggiornaValori();
+//                allarmeImpostato=true;
+//                setAlarm(calOut);
+//            }
+//            }
+//        };
+//
+//        mTimePicker = new TimePickerDialog(this,onTimeSetListener , Ora, Minuto, true);//Yes 24 hour time
+///*
+//        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,getString(R.string.timePickerCancel),new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                if (which == DialogInterface.BUTTON_NEGATIVE) {
+//                    timePickerChoseTime=false;
+//                   // Log.v("","Annullato il timepicker");
+//                }
+//            }
+//        });
+//
+////        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.HONEYCOMB){ // Fix for some Samsung/Nexus devices not explicitly calling onDateSet
+////            dateDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener(){
+////                public void onClick(DialogInterface dialog, int which) {
+////                    DatePicker datePicker = dateDialog.getDatePicker();
+////                    listener.onDateChanged(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+////                }
+////            });
+////        }
+//
+//      //  if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.HONEYCOMB) { // Fix for some Samsung/Nexus devices not explicitly calling onDateSet
+//            mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.timePickerAccept), new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                    if (which == DialogInterface.BUTTON_POSITIVE) {
+//                        timePickerChoseTime = true;
+//                        // Log.v("","Impostato il timepicker");
+//                    }
+//                }
+//            });
+//     //   }
+//// */
+//        mTimePicker.setCanceledOnTouchOutside(true);
+//        mTimePicker.setCancelable(true);
+//        mTimePicker.setOnDismissListener(new Dialog.OnDismissListener() {
+//            public void onDismiss(DialogInterface dialog) {
+//                timePickerChoseTime=false;
+//                // Non faccio nulla
+//            }
+//        });
+//
+//        mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
+//
+//        mTimePicker.show();
+//    }
 
     public void showRingTonePicker(View v){
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
@@ -912,7 +979,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Modifico solo i profili dei 5 giorni lavorativi
         switch (profiloLBLClicked){ // TODO: workaround per ora
-            case R.id.profiloLunVal: giornoSettimanaProfiloClick=0 ; break;
+            case R.id.profiloLunVal: giornoSettimanaProfiloClick=0 ;break;
             case R.id.profiloMarVal: giornoSettimanaProfiloClick=1 ;break;
             case R.id.profiloMerVal: giornoSettimanaProfiloClick=2 ;break;
             case R.id.profiloGioVal: giornoSettimanaProfiloClick=3 ;break;
