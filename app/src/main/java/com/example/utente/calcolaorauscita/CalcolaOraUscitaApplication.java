@@ -17,7 +17,29 @@ import java.util.UUID;
  * Created by utente on 20/09/2015.
  */
 
+@ReportsCrashes(
+        httpMethod = HttpSender.Method.PUT,
+        reportType = HttpSender.Type.JSON,
+        formUri = "https://pippokennedy.cloudant.com/acra-calcolaorauscita/_design/acra-storage/_update/report",
+        formUriBasicAuthLogin = "thernadrentandwasideadti",
+        formUriBasicAuthPassword = "282047e002ec98f34466f4eb62fb6ee0efd0348f",
 
+        customReportContent = {
+                // Campi obblicatori per acralyzer
+                ReportField.REPORT_ID, ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION,ReportField.PACKAGE_NAME,ReportField.BUILD, ReportField.STACK_TRACE,
+
+                // Campo per sapere il cellulare su cui è installato
+                ReportField.INSTALLATION_ID,
+
+                // Campi utili per avere altre info
+                ReportField.PHONE_MODEL,ReportField.CUSTOM_DATA, ReportField.LOGCAT, ReportField.SETTINGS_GLOBAL, ReportField.DEVICE_FEATURES,
+                ReportField.SETTINGS_SECURE, ReportField.SETTINGS_SYSTEM, ReportField.SHARED_PREFERENCES, ReportField.THREAD_DETAILS
+        },
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.crash_report
+)
+
+/*
 @ReportsCrashes(
         httpMethod = HttpSender.Method.PUT,
         reportType = HttpSender.Type.JSON,
@@ -39,6 +61,9 @@ import java.util.UUID;
         mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.crash_report
 )
+*/
+
+
 
 public class CalcolaOraUscitaApplication extends Application {
     // File che memorizza una UUID e verificare se l'applicazione è già stata eseguita

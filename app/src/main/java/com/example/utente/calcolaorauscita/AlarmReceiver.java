@@ -103,9 +103,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
 
-        Log.v("", "\n\n***\n"
-                + "Alarm is raised \n"
-                + "***\n");
+//        Log.v("", "\n\n***\n"
+//                + "Alarm is raised \n"
+//                + "***\n");
 
         // Invio un broadcast ai widget con i valori aggiornati di ora e minuto ingresso
         Intent intentWidget = new Intent(context, CalcolaOraUscitaWidget.class);

@@ -4,7 +4,9 @@
     <integer name="AlarmRequestCode">2232</integer>
     <integer name="RingTonePickerRequestCode">3232</integer>
     <integer name="intentMainActivity">1029</integer>
-<integer-array name="NotificationVibrationPattern">
+    <integer name="intentDialogActivity">1030</integer>
+
+    <integer-array name="NotificationVibrationPattern">
     <item>500</item>
     <item>500</item>
     <item>500</item>

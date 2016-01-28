@@ -155,7 +155,8 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         }
 
         // Imposto l'icona dell'allarme
-        Log.e("AllarmeImpostato",(allarmeImpostato?"SI":"NO"));
+//        Log.e("AllarmeImpostato",(allarmeImpostato?"SI":"NO"));
+
         if (allarmeImpostato) {
             remoteViews.setViewVisibility(R.id.allarmeImpostato,View.VISIBLE);
             remoteViews.setViewVisibility(R.id.allarmeImpostatoShadow,View.VISIBLE);
@@ -172,6 +173,8 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
     @Override
     public void onReceive (Context context, Intent intent){
         super.onReceive(context, intent);
+
+//        Log.e("CalcolaOraUscitaWidget", "onReceive");
 
         String s=context.getString(R.string.ORA_INGRESSO_WIDGET);
 
@@ -193,7 +196,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
         // Recupero i parametri dell'ora di ingresso oppure dalle shared prefs
         if (intent.hasExtra(s)) {
             // TODO : Attenzione constanti cablate!
-            Log.e("INTENT","SI");
+//            Log.e("INTENT","SI");
             allarmeImpostato=intent.getBooleanExtra(STATO_ALLARME,false);
             Ora = intent.getIntExtra(s, 8);
             Minuto = intent.getIntExtra(context.getString(R.string.MINUTO_INGRESSO_WIDGET), 0);

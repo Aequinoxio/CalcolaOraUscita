@@ -12,7 +12,16 @@
     <string name="buttonAnnulla">Annulla</string>
     <string name="buttonTimePicker">Scegli l\'ora</string>
     <string name="action_about">Informazioni</string>
+    <string name="action_share">Condividi</string>
     <string name="Autore">Gabriele Galluzzo</string>
+
+    <string name="screenShotExternalDir">Pictures</string>
+    <string name="screenShotFilename">calcolaorauscita-screenshot</string>
+    <string name="screenShotFileExtension">.png</string>
+    <string name="fileDeletionProblem">Non sono riuscito a cancellare il precedente screenshot\nProva a farlo tu in:</string>
+
+    <string name="CondividiCon">Condividi con…</string>
+    <string name="ShareMimeType">image/png</string>
 
     <string name="TODO">TODO</string>
     <string name="TODO_MSG">Non ancora implementato</string>
@@ -76,4 +85,5 @@
     <string name="alarmCancelYesNoDialog">Cancello l\'allarme impostato?</string>
     <string name="dialogYesButton">Si</string>
     <string name="dialogNoButton">No</string>
+    <string name="title_activity_dialog">Stai entrando adesso?</string>
 </resources>

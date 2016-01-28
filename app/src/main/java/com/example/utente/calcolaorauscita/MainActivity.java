@@ -1,19 +1,28 @@
 package com.example.utente.calcolaorauscita;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.*;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -99,6 +108,10 @@ public class MainActivity extends ActionBarActivity {
     // N.B. startActivityForRequest accetta solo valori a 16 bit (!!!)
     private static final int RingTonePickerRequestCode = R.integer.RingTonePickerRequestCode & 0xffff;
 
+    // ID per cancellare il file immagine dopo che l'ho condiviso
+    static final int SHARE_PICKER=777;
+    File imagePath=null;   // Metto una variabile di classe perchè mi serve per cancellare il file dopo averlo condiviso
+
     // Tengo traccia se ho impostato l'allarme
     static boolean allarmeImpostato;
    // private AlarmReceiver updateReceiver;   // Receiver per aggiornare lo stato dell'allarme
@@ -122,10 +135,139 @@ public class MainActivity extends ActionBarActivity {
     private int profiloLBLClicked;  // id della label cliccata TODO: Penso che si possa fare di meglio
     private int giornoSettimanaProfiloClick; // giorno della settimana ricavato dalle label su cui si e' cliccato TODO: Si puo' fare di meglio, non riesco a referenziare il giorno definito all'esterno della classe inlinea - probabilmente va ridefinito il timepicker come dialog a se
 
+/////////////////////////////////////////////////
+
+    /**
+     * Whether or not the system UI should be auto-hidden after
+     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
+     */
+    private static final boolean AUTO_HIDE = true;
+
+    /**
+     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
+     * user interaction before hiding the system UI.
+     */
+    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
+    /**
+     * Some older devices needs a small delay between UI widget updates
+     * and a change of the status and navigation bar.
+     */
+    private static final int UI_ANIMATION_DELAY = 300;
+
+    //  per la UI actionbar
+    private View mContentView;
+    private boolean mVisible;
+
+
+    private void toggle() {
+        if (mVisible) {
+            hide();
+        } else {
+            show();
+        }
+    }
+
+    private void hide() {
+        // Hide UI first
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        mVisible = false;
+
+//        // Schedule a runnable to remove the status and navigation bar after a delay
+//        mHideHandler.removeCallbacks(mShowPart2Runnable);
+//        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+    }
+
+    private final Runnable mHidePart2Runnable = new Runnable() {
+        @SuppressLint("InlinedApi")
+        @Override
+        public void run() {
+            // Delayed removal of status and navigation bar
+
+            // Note that some of these constants are new as of API 16 (Jelly Bean)
+            // and API 19 (KitKat). It is safe to use them, as they are inlined
+            // at compile-time and do nothing on earlier devices.
+            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
+    };
+
+    @SuppressLint("InlinedApi")
+    private void show() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
+        mVisible = true;
+
+//        // Show the system bar
+//        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+//        mVisible = true;
+//
+//        // Schedule a runnable to display UI elements after a delay
+//        mHideHandler.removeCallbacks(mHidePart2Runnable);
+//        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+    }
+    private final Runnable mShowPart2Runnable = new Runnable() {
+        @Override
+        public void run() {
+            // Delayed display of UI elements
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.show();
+            }
+        }
+    };
+
+    private final Handler mHideHandler = new Handler();
+    private final Runnable mHideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hide();
+        }
+    };
+
+    /**
+     * Schedules a call to hide() in [delay] milliseconds, canceling any
+     * previously scheduled calls.
+     */
+    private void delayedHide(int delayMillis) {
+        mHideHandler.removeCallbacks(mHideRunnable);
+        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+/////////////////////////////////////////////////
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*
+            test per mostrare e nascondere la toolbar
+         */
+        mVisible=false;
+        mContentView = findViewById(R.id.relativeLayout);
+        hide();
+        // Set up the user interaction to manually show or hide the system UI.
+        mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggle();
+            }
+        });
+
+        /*
+            fine test
+         */
 
         // Variabile per verificare se l'allarme è impostato
         allarmeImpostato=false;
@@ -309,13 +451,18 @@ public class MainActivity extends ActionBarActivity {
             else
                 uriRingTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-
+        // Cancello il file quando ritorno dallo share picker
+        if(requestCode==SHARE_PICKER){
+            if (imagePath.exists()) {
+                imagePath.delete();
+            }
+        }
     }
     private void setAlarm(Calendar targetCal){
 
-        Log.v("", "\n\n***\n"
-                + this.getString(R.string.setAlarmToastInfo) + " " + targetCal.getTime() + "\n"
-                + "***\n");
+//        Log.v("", "\n\n***\n"
+//                + this.getString(R.string.setAlarmToastInfo) + " " + targetCal.getTime() + "\n"
+//                + "***\n");
 
         // Aggiorno la sharefPrefs per mantenere lo stato dell'allarme
         SharedPreferences sp = getSharedPreferences(PREFS_NAME,0);
@@ -476,7 +623,7 @@ public class MainActivity extends ActionBarActivity {
             .setLights(Color.BLUE, 1500, 500)
             .setSmallIcon(R.drawable.ic_exit_to_app_white_18dp)
             .setPriority(Notification.PRIORITY_HIGH)
-            .setVibrate(pattern)
+//            .setVibrate(pattern)    // Commentato per vibrare con la modalità di default del telefono
             .setShowWhen(true)
             .setAutoCancel(true)
             .setOnlyAlertOnce(false)
@@ -711,6 +858,11 @@ public class MainActivity extends ActionBarActivity {
                             dialog.cancel();
                         }
                     }).show();
+            return true;
+        }
+
+        if (id==R.id.action_share){
+            catturaScreenshotECondividi();
             return true;
         }
 
@@ -1006,5 +1158,62 @@ public class MainActivity extends ActionBarActivity {
 
         TextView testo = (TextView) findViewById(profiloLBLClicked);
         testo.setText(String.format("%02d", profiloOra) + ":" + String.format("%02d", profiloMinuto));
+    }
+
+    private void catturaScreenshotECondividi(){
+        View v1 = getWindow().getDecorView().getRootView();
+
+        v1.setDrawingCacheEnabled(true);
+        Bitmap myBitmap = Bitmap.createBitmap(v1.getDrawingCache());
+        v1.setDrawingCacheEnabled(false);
+
+        salvaBitmap(myBitmap);
+
+    }
+
+    /*
+        Salva la bitmap della schermata corrente. Se riesce a salvarla la condivide altrimenti esce senza fare altro
+     */
+    private void salvaBitmap(Bitmap myBitmap){
+        String fileName=getString(R.string.screenShotFilename)+
+                "-"+Long.toString(System.currentTimeMillis())+
+                getString(R.string.screenShotFileExtension);
+        String filePath = Environment.getExternalStorageDirectory()
+                + File.separator + getString(R.string.screenShotExternalDir)
+                +File.separator+ fileName;
+        imagePath = new File(filePath);
+
+        if (imagePath.exists()){
+            if (!imagePath.delete()){
+                // Visualizzo un messaggio come feedback se non riesco a cancellarlo ed esco
+                Toast myToast = Toast.makeText(MainActivity.this,
+                        getString(R.string.fileDeletionProblem)+filePath,
+                        Toast.LENGTH_LONG);
+                myToast.show();
+                return ;
+            }
+        }
+
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(imagePath,false);
+            myBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+            scegliShareMethod(filePath);
+        } catch (FileNotFoundException e) {
+            Log.e("SalvaBitmap", e.getMessage(), e);
+        } catch (IOException e) {
+            Log.e("SalvaBitmap", e.getMessage(), e);
+        }
+    }
+
+    private void scegliShareMethod(String filePath){
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        Uri screenshotUri = Uri.parse(filePath);
+        sharingIntent.setType(getString(R.string.ShareMimeType));
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+        //startActivity(Intent.createChooser(sharingIntent, getString(R.string.CondividiCon)));
+        startActivityForResult(Intent.createChooser(sharingIntent, getString(R.string.CondividiCon)), SHARE_PICKER);
     }
 }

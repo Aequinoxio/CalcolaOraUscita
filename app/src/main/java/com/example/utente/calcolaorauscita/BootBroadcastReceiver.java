@@ -27,7 +27,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver{
             ed.putBoolean(STATO_ALLARME, false);
             ed.commit();
 
-            Log.e("BootReceiver","Lanciato");
+//            Log.e("BootReceiver","Lanciato");
 
             // Imposto il flag per il bootReceiver per disattivatmi
             ComponentName receiver = new ComponentName(context,BootBroadcastReceiver.class);
