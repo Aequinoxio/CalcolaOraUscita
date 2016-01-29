@@ -2,6 +2,7 @@ package com.example.utente.calcolaorauscita;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -9,8 +10,12 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 /**
@@ -21,8 +26,8 @@ import java.util.UUID;
         httpMethod = HttpSender.Method.PUT,
         reportType = HttpSender.Type.JSON,
         formUri = "https://pippokennedy.cloudant.com/acra-calcolaorauscita/_design/acra-storage/_update/report",
-        formUriBasicAuthLogin = "thernadrentandwasideadti",
-        formUriBasicAuthPassword = "282047e002ec98f34466f4eb62fb6ee0efd0348f",
+        formUriBasicAuthLogin = "bodurewarightleakeduends",
+        formUriBasicAuthPassword = "e7afc862ed2b89e72c5a33d63839431fc87b8958",
 
         customReportContent = {
                 // Campi obblicatori per acralyzer
@@ -74,23 +79,42 @@ public class CalcolaOraUscitaApplication extends Application {
      */
     private void checkFirstRunAndSendData(){
         Context context = getApplicationContext();
+        String versione = BuildConfig.VERSION_NAME;
 
         // Test per vedere il first run
         File installation = new File(context.getFilesDir(), INSTALLATION);
-        if (!installation.exists()) {
+
+        // Se il file esiste recupero la versione salvata come prima linea
+        if (installation.exists()){
+            try {
+                BufferedReader fin = new BufferedReader(new InputStreamReader(new FileInputStream(installation)));
+                versione = fin.readLine();
+                fin.close();
+            }catch (Exception fne){
+                fne.printStackTrace();
+            }
+        }
+
+        // Se il file non esiste o la versione è diversa da quella attuale mando il first run
+        // Todo: verificare perchè non va bene la verifica della versione
+        if (!installation.exists()||(versione.compareTo(BuildConfig.VERSION_NAME)!=0)) {
             // Provo a comunicare i dati al server. Se non ci riesco resta in first run
             ACRA.getErrorReporter().handleSilentException(new Throwable("Primo avvio applicazione"));
 
             try {
-                FileOutputStream out = new FileOutputStream(installation);
-
+                FileOutputStream out = new FileOutputStream(installation, false);
                 String id = UUID.randomUUID().toString()+"\n";
+
+                versione=BuildConfig.VERSION_NAME +"\n";
+
+                out.write(versione.getBytes());
+
                 out.write(id.getBytes());
                 out.close();
             }catch (Exception e){
                 throw new RuntimeException(e);
             }
-            // Se arrivo qui allora ho comunicato i dati e scrivo il file
+                // Se arrivo qui allora ho comunicato i dati e scrivo il file
         }
     }
 
