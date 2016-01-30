@@ -253,19 +253,21 @@ public class MainActivity extends ActionBarActivity {
 
         /*
             test per mostrare e nascondere la toolbar
-         */
+*/
         mVisible=false;
         mContentView = findViewById(R.id.relativeLayout);
         hide();
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
+        if (mContentView!=null) {
+            mContentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggle();
+                }
+            });
+        }
 
-        /*
+/*
             fine test
          */
 

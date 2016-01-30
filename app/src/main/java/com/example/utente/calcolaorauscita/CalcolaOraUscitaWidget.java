@@ -124,6 +124,7 @@ public class CalcolaOraUscitaWidget extends AppWidgetProvider {
                 il quadrato verde nei festivi
                 nell'orientamento landscape lasciare la visualizzazione a barra
         */
+
         if (weekend) {
             //remoteViews.setInt(R.id.progressBar, "setBackgroundResource", R.drawable.roundedrect_green);
             if (context.getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
