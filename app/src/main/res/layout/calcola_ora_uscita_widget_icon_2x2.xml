@@ -4,16 +4,29 @@
     android:id="@+id/calcola_ora_uscitaWDG"
     android:clickable="true">
 
+    <ProgressBar
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/progressBar"
+        android:indeterminate="false"
+        android:background="@drawable/roundedrect"
+        android:progressDrawable="@drawable/circular"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="false" />
+
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/roundedrect"
         android:backgroundTint="@android:color/background_dark"
-        android:clickable="false">
+        android:clickable="false"
+        android:id="@+id/laySfondo">
 
         <TextView
             android:id="@+id/OraUscitaTXT"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="36dp"
             android:text="@string/OraUscitaValueWidgetLBL"
             android:textColor="#ffffff"
@@ -23,12 +36,11 @@
             android:paddingLeft="@dimen/abc_action_bar_subtitle_bottom_margin_material"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/imageView2"
-            android:layout_toEndOf="@+id/imageView2"
             android:textSize="24sp" />
 
         <TextView
             android:id="@+id/OraIngressoTXT"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="36dp"
             android:text="@string/OraIngressoValueWidgetLBL"
             android:textColor="#ffffff"
@@ -45,7 +57,7 @@
 
         <TextView
             android:id="@+id/OraBuonoPastoTXT"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="36dp"
             android:text="@string/OraUscitaValueWidgetLBL"
             android:textColor="#ffffff"
