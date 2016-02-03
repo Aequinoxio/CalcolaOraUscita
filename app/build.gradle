@@ -9,7 +9,7 @@ android {
         applicationId "com.example.utente.calcolaorauscita"
         minSdkVersion 15
         targetSdkVersion 22
-        versionName '2.8.17'
+        versionName '2.8.18'
         versionCode 2
     }
     buildTypes {

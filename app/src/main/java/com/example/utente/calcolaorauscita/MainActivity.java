@@ -455,7 +455,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Cancello il file quando ritorno dallo share picker
         if(requestCode==SHARE_PICKER){
-            if (imagePath.exists()) {
+            if (imagePath!=null && imagePath.exists()) {
                 imagePath.delete();
             }
         }
