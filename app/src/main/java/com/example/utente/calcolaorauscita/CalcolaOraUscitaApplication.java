@@ -26,8 +26,8 @@ import java.util.UUID;
         httpMethod = HttpSender.Method.PUT,
         reportType = HttpSender.Type.JSON,
         formUri = "https://pippokennedy.cloudant.com/acra-calcolaorauscita/_design/acra-storage/_update/report",
-        formUriBasicAuthLogin = "bodurewarightleakeduends",
-        formUriBasicAuthPassword = "e7afc862ed2b89e72c5a33d63839431fc87b8958",
+        formUriBasicAuthLogin = "reneronsalselphavessings",
+        formUriBasicAuthPassword = "d0a9776121709648cd8da7afe629b1e2277cceb5",
 
         customReportContent = {
                 // Campi obblicatori per acralyzer
