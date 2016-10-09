@@ -21,7 +21,6 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/roundedrect"
         android:backgroundTint="@android:color/background_dark"
         android:clickable="false"
         android:paddingTop="@dimen/abc_action_bar_default_padding_material"
@@ -101,5 +100,17 @@
             android:layout_alignParentStart="true" />
 
     </RelativeLayout>
+
+    <TextView
+        android:text="@drawable/roundedrect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="304dp"
+        android:layout_marginStart="304dp"
+        android:layout_marginTop="113dp"
+        android:id="@+id/textView12" />
 
 </RelativeLayout>

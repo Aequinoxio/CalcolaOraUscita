@@ -49,7 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Toast.makeText(context, context.getString(R.string.NotificationAlarmExitToast), Toast.LENGTH_LONG).show();
 
         // TODO: Impostare il ringtone ed il volume
-        // TODO: verificare bele il tipo URI come recuperarlo
+        // TODO: verificare bene il tipo URI come recuperarlo
         String s=intent.getStringExtra(context.getString(R.string.alarmIntentRingToneUri));
         Uri uriRingTone;
         try{

@@ -6,6 +6,7 @@
             <corners android:radius="5dip" />
             <gradient
                 android:angle="90"
+                android:centerY="0.50"
                 android:startColor="#77AA0000"
                 android:endColor="#77FFFFFF"
                 android:type= "linear"
@@ -15,11 +16,11 @@
                 android:width="1dp"
                 android:color="#FF000000" />
              -->
-            <padding
-                android:left="5dp"
-                android:top="5dp"
-                android:right="5dp"
-                android:bottom="5dp" />
+            <!--<padding-->
+                <!--android:left="0dp"-->
+                <!--android:top="0dp"-->
+                <!--android:right="0dp"-->
+                <!--android:bottom="0dp" />-->
         </shape>
     </item>
 
@@ -38,11 +39,11 @@
                     android:width="1dp"
                     android:color="#FF000000" />
                 -->
-                <padding
-                    android:left="5dp"
-                    android:top="5dp"
-                    android:right="5dp"
-                    android:bottom="5dp" />
+                <!--<padding-->
+                    <!--android:left="0dp"-->
+                    <!--android:top="0dp"-->
+                    <!--android:right="0dp"-->
+                    <!--android:bottom="0dp" />-->
 
             </shape>
         </clip>

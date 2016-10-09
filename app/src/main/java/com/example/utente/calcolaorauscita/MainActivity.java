@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -19,6 +21,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.*;
 import android.os.Bundle;
@@ -39,26 +42,6 @@ import android.text.format.*;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
-
-//    public static class TimePickerFragment1 extends DialogFragment
-//            implements TimePickerDialog.OnTimeSetListener {
-//
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the current time as the default values for the picker
-//            final Calendar c = Calendar.getInstance();
-//            int hour = c.get(Calendar.HOUR_OF_DAY);
-//            int minute = c.get(Calendar.MINUTE);
-//
-//            // Create a new instance of TimePickerDialog and return it
-//            return new TimePickerDialog(getActivity(), this, hour, minute,
-//                    DateFormat.is24HourFormat(getActivity()));
-//        }
-//
-//        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//            // Do something with the time chosen by the user
-//        }
-//    }
 
     ////////////////////////////////////////////////////////////////////////
 
@@ -110,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
 
     // ID per cancellare il file immagine dopo che l'ho condiviso
     static final int SHARE_PICKER=777;
-    File imagePath=null;   // Metto una variabile di classe perchè mi serve per cancellare il file dopo averlo condiviso
+    Uri  uriImage=null;    // Metto una variabile di classe perchè mi serve per cancellare il file dopo averlo condiviso
 
     // Tengo traccia se ho impostato l'allarme
     static boolean allarmeImpostato;
@@ -455,8 +438,8 @@ public class MainActivity extends ActionBarActivity {
 
         // Cancello il file quando ritorno dallo share picker
         if(requestCode==SHARE_PICKER){
-            if (imagePath!=null && imagePath.exists()) {
-                imagePath.delete();
+            if (uriImage != null){
+                getContentResolver().delete(uriImage, null, null);
             }
         }
     }
@@ -636,10 +619,6 @@ public class MainActivity extends ActionBarActivity {
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .build();
 
-//      myNotification.ledARGB=0xFF0000FF;
-//      myNotification.ledOnMS=500;
-//      myNotification.ledOffMS=500;
-
         notificationManager.notify(R.integer.MY_NOTIFICATION_ID, myNotification);
     }
     protected void aggiornaValori(){
@@ -694,12 +673,13 @@ public class MainActivity extends ActionBarActivity {
         testo = (TextView) findViewById(R.id.caricatoreWeekend);
         if (weekend) {
             //testo.setBackgroundResource(R.drawable.roundedrect_green);
-            //pb.setBackgroundResource(R.drawable.roundedrect_green);
+            pb.setBackgroundResource(R.drawable.roundedrect_green);
             pb.setProgress(5);
+//            pb.setSecondaryProgress(5);
             testo.setText(getString(R.string.weekendCaricato));
         } else {
             //testo.setBackgroundResource(R.drawable.roundedrect_red);
-            //pb.setBackgroundResource(R.drawable.roundedrect_red);
+            pb.setBackgroundResource(R.drawable.roundedrect_red);
             pb.setSecondaryProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1);
             pb.setProgress(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-2);
             testo.setText(getString(R.string.weekendIsLoading));
@@ -1044,78 +1024,6 @@ public class MainActivity extends ActionBarActivity {
                         }).setView(timePicker).show();
     }
 
-//    public void showTimePickerDialog(View v) {
-//        TimePickerDialog mTimePicker;
-//        timePickerChoseTime=true;
-//        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-//
-//            @Override
-//            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-//
-//            if (timePickerChoseTime) {
-//                // Se clicco su Salva allora imposto tutto al giorno attuale
-//                calIn=Calendar.getInstance();
-//                calOut=Calendar.getInstance();
-//
-//                calIn.set(Calendar.HOUR_OF_DAY, selectedHour);
-//                calIn.set(Calendar.MINUTE, selectedMinute);
-//                calOut.set(Calendar.HOUR_OF_DAY, selectedHour);
-//                calOut.set(Calendar.MINUTE, selectedMinute);
-//
-//                Ora = selectedHour;
-//                Minuto = selectedMinute;
-//                aggiornaValori();
-//                allarmeImpostato=true;
-//                setAlarm(calOut);
-//            }
-//            }
-//        };
-//
-//        mTimePicker = new TimePickerDialog(this,onTimeSetListener , Ora, Minuto, true);//Yes 24 hour time
-///*
-//        mTimePicker.setButton(DialogInterface.BUTTON_NEGATIVE,getString(R.string.timePickerCancel),new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (which == DialogInterface.BUTTON_NEGATIVE) {
-//                    timePickerChoseTime=false;
-//                   // Log.v("","Annullato il timepicker");
-//                }
-//            }
-//        });
-//
-////        if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.HONEYCOMB){ // Fix for some Samsung/Nexus devices not explicitly calling onDateSet
-////            dateDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener(){
-////                public void onClick(DialogInterface dialog, int which) {
-////                    DatePicker datePicker = dateDialog.getDatePicker();
-////                    listener.onDateChanged(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-////                }
-////            });
-////        }
-//
-//      //  if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.HONEYCOMB) { // Fix for some Samsung/Nexus devices not explicitly calling onDateSet
-//            mTimePicker.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.timePickerAccept), new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int which) {
-//                    if (which == DialogInterface.BUTTON_POSITIVE) {
-//                        timePickerChoseTime = true;
-//                        // Log.v("","Impostato il timepicker");
-//                    }
-//                }
-//            });
-//     //   }
-//// */
-//        mTimePicker.setCanceledOnTouchOutside(true);
-//        mTimePicker.setCancelable(true);
-//        mTimePicker.setOnDismissListener(new Dialog.OnDismissListener() {
-//            public void onDismiss(DialogInterface dialog) {
-//                timePickerChoseTime=false;
-//                // Non faccio nulla
-//            }
-//        });
-//
-//        mTimePicker.setTitle(getString(R.string.TIME_PICKER_TITLE));
-//
-//        mTimePicker.show();
-//    }
-
     public void showRingTonePicker(View v){
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
 
@@ -1170,39 +1078,25 @@ public class MainActivity extends ActionBarActivity {
         v1.setDrawingCacheEnabled(false);
 
         salvaBitmap(myBitmap);
-
     }
 
     /*
         Salva la bitmap della schermata corrente. Se riesce a salvarla la condivide altrimenti esce senza fare altro
      */
     private void salvaBitmap(Bitmap myBitmap){
-        String fileName=getString(R.string.screenShotFilename)+
-                "-"+Long.toString(System.currentTimeMillis())+
-                getString(R.string.screenShotFileExtension);
-        String filePath = Environment.getExternalStorageDirectory()
-                + File.separator + getString(R.string.screenShotExternalDir)
-                +File.separator+ fileName;
-        imagePath = new File(filePath);
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "title");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        uriImage = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values);
 
-        if (imagePath.exists()){
-            if (!imagePath.delete()){
-                // Visualizzo un messaggio come feedback se non riesco a cancellarlo ed esco
-                Toast myToast = Toast.makeText(MainActivity.this,
-                        getString(R.string.fileDeletionProblem)+filePath,
-                        Toast.LENGTH_LONG);
-                myToast.show();
-                return ;
-            }
-        }
-
-        FileOutputStream fos;
+        OutputStream os;
         try {
-            fos = new FileOutputStream(imagePath,false);
-            myBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.close();
-            scegliShareMethod(filePath);
+            os=getContentResolver().openOutputStream(uriImage);
+            myBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            os.flush();
+            os.close();
+            scegliShareMethod();
         } catch (FileNotFoundException e) {
             Log.e("SalvaBitmap", e.getMessage(), e);
         } catch (IOException e) {
@@ -1210,12 +1104,11 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void scegliShareMethod(String filePath){
+    private void scegliShareMethod(){
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-        Uri screenshotUri = Uri.parse(filePath);
+
         sharingIntent.setType(getString(R.string.ShareMimeType));
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-        //startActivity(Intent.createChooser(sharingIntent, getString(R.string.CondividiCon)));
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, uriImage);
         startActivityForResult(Intent.createChooser(sharingIntent, getString(R.string.CondividiCon)), SHARE_PICKER);
     }
 }
